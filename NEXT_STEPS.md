@@ -118,6 +118,7 @@ import { ResumeAnalyzer } from './components/features/ResumeAnalyzer';
 function App() {
 const [activeFeature, setActiveFeature] = useState('resume-analyzer');
 return (
+
 <div>
 <nav>
 <button onClick={() => setActiveFeature('resume-analyzer')}>Resume Analyzer</button>
