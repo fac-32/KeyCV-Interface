@@ -14,7 +14,7 @@ const CreateUser = () => {
   const [password, setPassword] = useState<string>("");
   const [message, setMessage] = useState<string>("");
 
-  const submitHandler = async (event) => {
+  const submitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     setMessage("");
@@ -35,38 +35,40 @@ const CreateUser = () => {
     });
 
     if (error) {
-      setMessage(
-        "an error has occured while creating your account, please try again later",
-      );
-    }
-    if (data) {
+      setMessage("an error has occured while creating your account");
+    } else if (data) {
       setMessage("acount created");
     }
   };
 
   return (
-    <div className="grid w-full max-w-sm items-center gap-3">
-      Create an account
-      <Label htmlFor="email">Email</Label>
-      <Input
-        type="email"
-        id="email"
-        onChange={(event) => setEmail(event.target.value)}
-        placeholder="example@email.com"
-        required
-      />
-      <Label htmlFor="password">Password</Label>
-      <Input
-        type="password"
-        id="password"
-        onChange={(event) => setPassword(event.target.value)}
-        required
-      />
-      <Button type="submit" onClick={submitHandler} variant="outline">
-        Create
-      </Button>
+    <section>
+      <form
+        className="grid w-full max-w-sm items-center gap-3"
+        onSubmit={submitHandler}
+      >
+        Create an account
+        <Label htmlFor="email">Email</Label>
+        <Input
+          type="email"
+          id="email"
+          onChange={(event) => setEmail(event.target.value)}
+          placeholder="example@email.com"
+          required
+        />
+        <Label htmlFor="password">Password</Label>
+        <Input
+          type="password"
+          id="password"
+          onChange={(event) => setPassword(event.target.value)}
+          required
+        />
+        <Button type="submit" variant="outline">
+          Create
+        </Button>
+      </form>
       <p>{message}</p>
-    </div>
+    </section>
   );
 };
 
