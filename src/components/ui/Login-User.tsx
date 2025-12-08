@@ -9,16 +9,36 @@ const LoginUser = () => {
     const [password, setPassword] = useState<string>("");
     const [message, setMessage] = useState<string>("");
 
+    const submitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+         if (!email || !password) {
+            setMessage("email and password fields are required");
+            return;
+        }
+
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password,
+        });
+
+        if (error) {
+            setMessage("An error has occured logging you in");
+        } else if (data) {
+            setMessage(`Logged in as ${data.user.email}`);
+        }
+    };
+
     return (
         <section>
-            <form className="grid w-full max-w-sm items-center gap-3">
+            <form className="grid w-full max-w-sm items-center gap-3" onSubmit={submitHandler}>
                 <p>Log into existing account</p>
 
-                <Label htmlFor="email">Email</Label>
-                <Input type="email" id="email" onChange={(event) => setEmail(event.target.value)} placeholder="example@email.com" required />
+                <Label htmlFor="login-email">Email</Label>
+                <Input type="email" id="login-email" onChange={(event) => setEmail(event.target.value)} placeholder="example@email.com" required />
 
-                <Label htmlFor="password">Password</Label>
-                <Input type="password" id="password" onChange={(event) => setPassword(event.target.value)} required />
+                <Label htmlFor="login-password">Password</Label>
+                <Input type="password" id="login-password" onChange={(event) => setPassword(event.target.value)} required />
             
                 <Button type="submit" variant="outline">Log in</Button>
             </form>

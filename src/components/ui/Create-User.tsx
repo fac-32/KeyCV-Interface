@@ -43,18 +43,18 @@ const CreateUser = () => {
         onSubmit={submitHandler}
       >
         Create an account
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="signup-email">Email</Label>
         <Input
           type="email"
-          id="email"
+          id="signup-email"
           onChange={(event) => setEmail(event.target.value)}
           placeholder="example@email.com"
           required
         />
-        <Label htmlFor="password">Password</Label>
+        <Label htmlFor="signup-password">Password</Label>
         <Input
           type="password"
-          id="password"
+          id="signup-password"
           onChange={(event) => setPassword(event.target.value)}
           required
         />
