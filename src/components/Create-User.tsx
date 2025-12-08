@@ -31,21 +31,27 @@ const CreateUser = () => {
     });
 
     if (error) {
-      if ( error?.code === "user_already_exists" ) {
+      if (error?.code === "user_already_exists") {
         setMessage("This email is already in use");
       } else {
         setMessage("An error has occured while creating your account");
-      }      
+      }
     } else if (data) {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
       // insert a user in the public.users relation with auth.users.id as FK PK
-      const { error } = await supabase.from('users').insert({ user_id: user?.id });
+      const { error } = await supabase
+        .from("users")
+        .insert({ user_id: user?.id });
 
-      if ( error?.code === "23505" ) {
+      if (error?.code === "23505") {
         setMessage(`This email is already in use`);
       } else {
-        setMessage(`Acount created successfully ${/*, please verify your email*/ ""}`); // I remove email verification for quick testing
+        setMessage(
+          `Acount created successfully ${/*, please verify your email*/ ""}`,
+        ); // I remove email verification for quick testing
       }
     }
   };
@@ -56,7 +62,8 @@ const CreateUser = () => {
         className="grid w-full max-w-sm items-center gap-3"
         onSubmit={submitHandler}
       >
-        Create an account
+        <p>Create an account</p>
+
         <Label htmlFor="signup-email">Email</Label>
         <Input
           type="email"
@@ -65,6 +72,7 @@ const CreateUser = () => {
           placeholder="example@email.com"
           required
         />
+        
         <Label htmlFor="signup-password">Password</Label>
         <Input
           type="password"
@@ -72,6 +80,7 @@ const CreateUser = () => {
           onChange={(event) => setPassword(event.target.value)}
           required
         />
+        
         <Button type="submit" variant="outline">
           Create
         </Button>
