@@ -1,13 +1,8 @@
 import { useState } from "react";
-import { createClient } from "@supabase/supabase-js";
+import supabase from "@/lib/supabaseClient";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY,
-);
 
 const CreateUser = () => {
   const [email, setEmail] = useState<string>("");
