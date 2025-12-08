@@ -24,15 +24,29 @@ const CreateUser = () => {
       return;
     }
 
+    // sign up a user is auth.users
     const { data, error } = await supabase.auth.signUp({
       email: email,
       password: password,
     });
 
     if (error) {
-      setMessage("an error has occured while creating your account");
+      if ( error?.code === "user_already_exists" ) {
+        setMessage("This email is already in use");
+      } else {
+        setMessage("An error has occured while creating your account");
+      }      
     } else if (data) {
-      setMessage("acount created");
+      const { data: { user } } = await supabase.auth.getUser();
+
+      // insert a user in the public.users relation with auth.users.id as FK PK
+      const { error } = await supabase.from('users').insert({ user_id: user?.id });
+
+      if ( error?.code === "23505" ) {
+        setMessage(`This email is already in use`);
+      } else {
+        setMessage(`Acount created successfully ${/*, please verify your email*/ ""}`); // I remove email verification for quick testing
+      }
     }
   };
 
