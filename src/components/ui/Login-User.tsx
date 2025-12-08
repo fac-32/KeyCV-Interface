@@ -23,7 +23,11 @@ const LoginUser = () => {
         });
 
         if (error) {
-            setMessage("An error has occured logging you in");
+            if ( error.message === "Invalid login credentials" ) {
+                setMessage("Email or password is incorrect");
+            } else {
+                setMessage("Something has gone wrong while trying to log you in");
+            }
         } else if (data) {
             setMessage(`Logged in as ${data.user.email}`);
         }
