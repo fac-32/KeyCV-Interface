@@ -72,7 +72,7 @@ const CreateUser = () => {
           placeholder="example@email.com"
           required
         />
-        
+
         <Label htmlFor="signup-password">Password</Label>
         <Input
           type="password"
@@ -80,7 +80,7 @@ const CreateUser = () => {
           onChange={(event) => setPassword(event.target.value)}
           required
         />
-        
+
         <Button type="submit" variant="outline">
           Create
         </Button>
