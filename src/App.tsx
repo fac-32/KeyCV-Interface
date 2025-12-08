@@ -1,7 +1,7 @@
 import "./App.css";
 import CVUpload from "./components/CV-Upload";
-import CreateUser from "./components/ui/Create-User";
-import LoginUser from "./components/ui/Login-User";
+import CreateUser from "./components/Create-User";
+import LoginUser from "./components/Login-User";
 
 function App() {
   return (
