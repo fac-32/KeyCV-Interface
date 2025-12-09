@@ -88,6 +88,7 @@ export default function JobForm() {
                 <Textarea
                   placeholder="Please paste job description here"
                   {...field}
+                  required
                 />
               </FormControl>
               <FormDescription />
