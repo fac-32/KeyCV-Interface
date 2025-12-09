@@ -20,7 +20,7 @@ export default defineConfig([
       globals: globals.browser,
     },
     rules: {
-      'linebreak-style': ['error', 'unix']
-    }
+      "linebreak-style": ["error", "unix"],
+    },
   },
 ]);

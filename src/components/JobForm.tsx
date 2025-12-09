@@ -20,8 +20,8 @@ export default function JobForm() {
   const [responseMessage, setResponseMessage] = useState<string | null>(null);
 
   // Replace with your real API endpoint
-  // const API_ENDPOINT = "https://keycv.onrender.com/submit-info";
-  const API_ENDPOINT = "/analyze-resume";
+  const API_ENDPOINT = "https://keycv.onrender.com/analyze-resume";
+  // const API_ENDPOINT = "/analyze-resume";
 
   // eslint-disable-next-line
   async function onSubmit(values: any) {
