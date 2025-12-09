@@ -23,6 +23,7 @@ export default function JobForm() {
   // const API_ENDPOINT = "https://keycv.onrender.com/submit-info";
   const API_ENDPOINT = "/submit-info";
 
+  // eslint-disable-next-line
   async function onSubmit(values: any) {
     setResponseMessage(null);
 

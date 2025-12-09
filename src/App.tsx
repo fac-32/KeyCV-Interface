@@ -1,5 +1,5 @@
 import "./App.css";
-import CVUpload from "./components/CV-Upload";
+// import CVUpload from "./components/CV-Upload";
 import JobForm from "./components/JobForm";
 
 function App() {
@@ -11,7 +11,7 @@ function App() {
     </>
   );
 }
-
+/*
 async function handleClick() {
   // const result = await customFetch();
   // console.log(result)
@@ -34,6 +34,6 @@ async function customFetch() {
   const data = await fetch("/api");
   const text = data.text();
   return text;
-}
+}*/
 
 export default App;
