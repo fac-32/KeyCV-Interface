@@ -39,8 +39,8 @@ jobs:
         run: npm ci
       - name: Build
         env:
-          VITE_SUPABASE_URL=https://iapevddghszdvmalplsl.supabase.co
-          VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY=sb_publishable_KDqzXqJwX2lPPBjrl4JNbA_DoMkNQuc
+          VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY=${{ secrets.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY }}
         run: npm run build
       - name: Setup Pages
         uses: actions/configure-pages@v5
