@@ -13,15 +13,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
+import { analyzeResume } from "@/services/api";
 
 export default function JobForm() {
   const form = useForm();
   const [isUploading, setIsUploading] = useState(false);
   const [responseMessage, setResponseMessage] = useState<string | null>(null);
-
-  // Replace with your real API endpoint
-  const API_ENDPOINT = "https://keycv.onrender.com/analyze-resume";
-  // const API_ENDPOINT = "/analyze-resume";
 
   // eslint-disable-next-line
   async function onSubmit(values: any) {
@@ -41,19 +38,10 @@ export default function JobForm() {
     }
 
     formData.append("cv_file", file);
-    // console.log(formData);
 
     try {
       setIsUploading(true);
-      const res = await fetch(API_ENDPOINT, {
-        method: "POST",
-        body: formData,
-      });
-      if (!res.ok) {
-        throw new Error(`Submission failed with status ${res.status}`);
-      }
-      const data = await res.json().catch(() => null);
-      // console.log(data);
+      const data = await analyzeResume(formData);
       setResponseMessage(data?.message || "Submitted successfully.");
       // optionally reset the form
       form.reset();

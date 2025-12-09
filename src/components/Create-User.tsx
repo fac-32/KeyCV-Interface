@@ -1,5 +1,5 @@
 import { useState } from "react";
-import supabase from "@/lib/supabaseClient";
+import { signUpUser, getCurrentUser, insertUser } from "@/services/api";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -25,10 +25,7 @@ const CreateUser = () => {
     }
 
     // sign up a user is auth.users
-    const { data, error } = await supabase.auth.signUp({
-      email: email,
-      password: password,
-    });
+    const { data, error } = await signUpUser(email, password);
 
     if (error) {
       if (error?.code === "user_already_exists") {
@@ -39,12 +36,10 @@ const CreateUser = () => {
     } else if (data) {
       const {
         data: { user },
-      } = await supabase.auth.getUser();
+      } = await getCurrentUser();
 
       // insert a user in the public.users relation with auth.users.id as FK PK
-      const { error } = await supabase
-        .from("users")
-        .insert({ user_id: user?.id });
+      const { error } = await insertUser(user?.id);
 
       if (error?.code === "23505") {
         setMessage(`This email is already in use`);
@@ -91,3 +86,4 @@ const CreateUser = () => {
 };
 
 export default CreateUser;
+
