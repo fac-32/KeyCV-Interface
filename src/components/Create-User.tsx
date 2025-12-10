@@ -45,7 +45,7 @@ const CreateUser = () => {
         setMessage(`This email is already in use`);
       } else {
         setMessage(
-          `Acount created successfully ${/*, please verify your email*/ ""}`,
+          `Account created successfully ${/*, please verify your email*/ ""}`,
         ); // I remove email verification for quick testing
       }
     }
