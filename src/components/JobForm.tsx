@@ -21,6 +21,13 @@ export default function JobForm() {
   const [isUploading, setIsUploading] = useState(false);
   const [responseMessage, setResponseMessage] = useState<string | null>(null);
 
+  const [analysis, setAnalysis] = useState<{
+    resume: string;
+    jobDescription: string;
+    feedback: string;
+    cvName?: string
+  } | null>(null);
+
   const API_ENDPOINT = buildApiUrl("api/ai/analyze-resume");
 
   // eslint-disable-next-line
@@ -52,6 +59,14 @@ export default function JobForm() {
         throw new Error(`Submission failed with status ${res.status}`);
       }
       const data = await res.json().catch(() => null);
+      
+      // store response
+      setAnalysis({
+        resume: data.resumeText,
+        jobDescription: data.jobDescription,
+        feedback: data.feedback,
+      });
+
       // console.log(data);
       setResponseMessage(data?.message || "Submitted successfully.");
       // optionally reset the form
@@ -63,6 +78,28 @@ export default function JobForm() {
     } finally {
       setIsUploading(false);
     }
+  }
+
+  async function onClick() {
+    // TO DO: build two separate API endpoints
+    try {
+      const res = await fetch(buildApiUrl("api/supabase/save"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json"},
+        body: JSON.stringify({
+          resume: analysis?.resume,
+          jobDescription: analysis?.jobDescription,
+          feedback: analysis?.feedback,
+          cvName: "placeholder name",
+        }),
+      });
+
+      const data = await res.json();
+      console.log(`successful route to save: ${data}`);
+    } catch ( error ) {
+      console.log(`error when attempting saving: ${error}`)
+    }
+    
   }
 
   return (
@@ -108,6 +145,12 @@ export default function JobForm() {
           </Button>
         </div>
       </form>
+
+      {/* TO DO: validate if a user can save, i.e. they are logged in and ... 
+      or maybe just show the button to logged in users... 
+      also need to pass token when routing to server so the user can be 
+      authenticated/authorized */}
+      <Button type="button" onClick={onClick}>Save</Button>
     </Form>
   );
 }
