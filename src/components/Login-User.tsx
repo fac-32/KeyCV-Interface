@@ -1,5 +1,5 @@
 import { useState } from "react";
-import supabase from "@/lib/supabaseClient";
+import { signInUser } from "@/services/api";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -17,10 +17,7 @@ const LoginUser = () => {
       return;
     }
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password,
-    });
+    const { data, error } = await signInUser(email, password);
 
     if (error) {
       if (error.message === "Invalid login credentials") {
@@ -58,9 +55,7 @@ const LoginUser = () => {
           required
         />
 
-        <Button type="submit" variant="outline">
-          Log in
-        </Button>
+        <Button type="submit">Log in</Button>
       </form>
       <p>{message}</p>
     </section>

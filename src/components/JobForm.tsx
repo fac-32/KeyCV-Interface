@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { buildApiUrl } from "@/lib/api";
 import {
   Form,
   FormControl,
@@ -13,15 +14,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
+// import { analyzeResume } from "@/services/api";
 
 export default function JobForm() {
   const form = useForm();
   const [isUploading, setIsUploading] = useState(false);
   const [responseMessage, setResponseMessage] = useState<string | null>(null);
 
-  // Replace with your real API endpoint
-  const API_ENDPOINT = "https://keycv.onrender.com/analyze-resume";
-  // const API_ENDPOINT = "/analyze-resume";
+  const API_ENDPOINT = buildApiUrl("api/ai/analyze-resume");
 
   // eslint-disable-next-line
   async function onSubmit(values: any) {
@@ -41,7 +41,6 @@ export default function JobForm() {
     }
 
     formData.append("cv_file", file);
-    // console.log(formData);
 
     try {
       setIsUploading(true);
@@ -88,6 +87,7 @@ export default function JobForm() {
                 <Textarea
                   placeholder="Please paste job description here"
                   {...field}
+                  required
                 />
               </FormControl>
               <FormDescription />
