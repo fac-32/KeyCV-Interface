@@ -14,6 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
+// import { analyzeResume } from "@/services/api";
 
 export default function JobForm() {
   const form = useForm();
@@ -40,7 +41,6 @@ export default function JobForm() {
     }
 
     formData.append("cv_file", file);
-    // console.log(formData);
 
     try {
       setIsUploading(true);
@@ -58,7 +58,7 @@ export default function JobForm() {
       form.reset();
     } catch (error) {
       setResponseMessage(
-        error instanceof Error ? error.message : "Submission failed.",
+        error instanceof Error ? error.message : "Submission failed."
       );
     } finally {
       setIsUploading(false);
@@ -87,6 +87,7 @@ export default function JobForm() {
                 <Textarea
                   placeholder="Please paste job description here"
                   {...field}
+                  required
                 />
               </FormControl>
               <FormDescription />
