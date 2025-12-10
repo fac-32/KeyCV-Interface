@@ -11,10 +11,21 @@ Currently, two official plugins are available:
 
 The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
+## Linting
+
+To run the lint check in this project before pushing your repository, execute the following command:
+
+```bash
+npm run lint
+```
+
+This command will run both ESLint and Prettier, fixing issues where possible.
+
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
+```text
     export default defineConfig([
       globalIgnores(['dist']),
       {
@@ -40,9 +51,11 @@ If you are developing a production application, we recommend updating the config
         },
       },
     ])
+```
 
 You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
+```text
     // eslint.config.js
     import reactX from 'eslint-plugin-react-x'
     import reactDom from 'eslint-plugin-react-dom'
@@ -67,3 +80,5 @@ You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-re
         },
       },
     ])
+```
+
