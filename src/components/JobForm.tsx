@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { buildApiUrl } from "@/lib/api";
 import {
   Form,
   FormControl,
@@ -13,12 +14,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import { analyzeResume } from "@/services/api";
+// import { analyzeResume } from "@/services/api";
 
 export default function JobForm() {
   const form = useForm();
   const [isUploading, setIsUploading] = useState(false);
   const [responseMessage, setResponseMessage] = useState<string | null>(null);
+
+  const API_ENDPOINT = buildApiUrl("api/ai/analyze-resume");
 
   // eslint-disable-next-line
   async function onSubmit(values: any) {
@@ -41,7 +44,15 @@ export default function JobForm() {
 
     try {
       setIsUploading(true);
-      const data = await analyzeResume(formData);
+      const res = await fetch(API_ENDPOINT, {
+        method: "POST",
+        body: formData,
+      });
+      if (!res.ok) {
+        throw new Error(`Submission failed with status ${res.status}`);
+      }
+      const data = await res.json().catch(() => null);
+      // console.log(data);
       setResponseMessage(data?.message || "Submitted successfully.");
       // optionally reset the form
       form.reset();
