@@ -10,40 +10,40 @@ This audit outlines critical issues to be addressed before implementing tests wi
 
 **Recommendation:**
 
-* **Install Testing Libraries:** Add `@testing-library/react`, `jsdom` (or `happy-dom`), and `@testing-library/jest-dom` as `devDependencies`.
+- **Install Testing Libraries:** Add `@testing-library/react`, `jsdom` (or `happy-dom`), and `@testing-library/jest-dom` as `devDependencies`.
 
-    ```bash
-    npm install --save-dev @testing-library/react jsdom @testing-library/jest-dom
-    ```
+  ```bash
+  npm install --save-dev @testing-library/react jsdom @testing-library/jest-dom
+  ```
 
-* **Configure Vitest:** Update `vite.config.ts` to configure the test environment.
+- **Configure Vitest:** Update `vite.config.ts` to configure the test environment.
 
-    ```typescript
-    // vite.config.ts
-    import { defineConfig } from "vite";
-    import react from "@vitejs/plugin-react";
-    import path from "path";
-    import tailwindcss from "@tailwindcss/vite";
+  ```typescript
+  // vite.config.ts
+  import { defineConfig } from "vite";
+  import react from "@vitejs/plugin-react";
+  import path from "path";
+  import tailwindcss from "@tailwindcss/vite";
 
-    export default defineConfig({
-      base: "/KeyCV-Interface/",
-      plugins: [react(), tailwindcss()],
-      resolve: {
-        alias: {
-          "@": path.resolve(__dirname, "./src"),
-        },
+  export default defineConfig({
+    base: "/KeyCV-Interface/",
+    plugins: [react(), tailwindcss()],
+    resolve: {
+      alias: {
+        "@": path.resolve(__dirname, "./src"),
       },
-      // vitest config
-      test: {
-        globals: true,
-        environment: "jsdom",
-        setupFiles: "./src/test/setup.ts", // Create this file
-        css: true,
-      },
-    });
-    ```
+    },
+    // vitest config
+    test: {
+      globals: true,
+      environment: "jsdom",
+      setupFiles: "./src/test/setup.ts", // Create this file
+      css: true,
+    },
+  });
+  ```
 
-* **Create Setup File:** Create `src/test/setup.ts` to import necessary utilities like `@testing-library/jest-dom`.
+- **Create Setup File:** Create `src/test/setup.ts` to import necessary utilities like `@testing-library/jest-dom`.
 
 ## 2. Hardcoded API Endpoints & Credentials [✅]
 
@@ -51,15 +51,15 @@ This audit outlines critical issues to be addressed before implementing tests wi
 
 **Recommendation:**
 
-* **Use Environment Variables:** Centralize all external URLs in `.env` files. Use `VITE_API_BASE_URL` as suggested in `NEXT_STEPS.md`.
-* **Create a Test Environment File:** Create a `.env.test` file with mock credentials and URLs for the testing environment. Vitest will pick this up automatically.
+- **Use Environment Variables:** Centralize all external URLs in `.env` files. Use `VITE_API_BASE_URL` as suggested in `NEXT_STEPS.md`.
+- **Create a Test Environment File:** Create a `.env.test` file with mock credentials and URLs for the testing environment. Vitest will pick this up automatically.
 
-    ```text
-    # .env.test
-    VITE_SUPABASE_URL="https://mock.supabase.co"
-    VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY="mock-key"
-    VITE_API_BASE_URL="http://localhost:1234/api/ai"
-    ```
+  ```text
+  # .env.test
+  VITE_SUPABASE_URL="https://mock.supabase.co"
+  VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY="mock-key"
+  VITE_API_BASE_URL="http://localhost:1234/api/ai"
+  ```
 
 ## 3. Direct API and Database Calls in Components [✅]
 
@@ -67,22 +67,22 @@ This audit outlines critical issues to be addressed before implementing tests wi
 
 **Recommendation:**
 
-* **Abstract Logic into Services/Hooks:** Move all Supabase and `fetch` calls into a dedicated service layer (e.g., `src/services/api.ts`) or custom hooks (e.g., `useAuth`, `useSubmitCV`).
-* **Example (Service):**
+- **Abstract Logic into Services/Hooks:** Move all Supabase and `fetch` calls into a dedicated service layer (e.g., `src/services/api.ts`) or custom hooks (e.g., `useAuth`, `useSubmitCV`).
+- **Example (Service):**
 
-    ```typescript
-    // src/services/api.ts
-    import supabase from "@/lib/supabaseClient";
+  ```typescript
+  // src/services/api.ts
+  import supabase from "@/lib/supabaseClient";
 
-    export const signUpUser = (email, password) => {
-      return supabase.auth.signUp({ email, password });
-    };
+  export const signUpUser = (email, password) => {
+    return supabase.auth.signUp({ email, password });
+  };
 
-    export const analyzeResume = (formData) => {
-      const apiUrl = import.meta.env.VITE_API_BASE_URL + '/analyze-resume';
-      return fetch(apiUrl, { method: 'POST', body: formData });
-    };
-    ```
+  export const analyzeResume = (formData) => {
+    const apiUrl = import.meta.env.VITE_API_BASE_URL + "/analyze-resume";
+    return fetch(apiUrl, { method: "POST", body: formData });
+  };
+  ```
 
 ## 4. No Mocking Strategy [✅]
 
@@ -90,24 +90,24 @@ This audit outlines critical issues to be addressed before implementing tests wi
 
 **Recommendation:**
 
-* **Implement Mocking:** Use `vitest.vi.mock()` to mock the service modules or custom hooks created in the previous step. This allows you to control the data and errors returned during tests without making real API calls.
-* **Example (Test File):**
+- **Implement Mocking:** Use `vitest.vi.mock()` to mock the service modules or custom hooks created in the previous step. This allows you to control the data and errors returned during tests without making real API calls.
+- **Example (Test File):**
 
-    ```tsx
-    // src/components/Login-User.test.tsx
-    import { render, screen, fireEvent } from "@testing-library/react";
-    import { vi } from "vitest";
-    import LoginUser from "./Login-User";
+  ```tsx
+  // src/components/Login-User.test.tsx
+  import { render, screen, fireEvent } from "@testing-library/react";
+  import { vi } from "vitest";
+  import LoginUser from "./Login-User";
 
-    // Mock the entire api service
-    vi.mock("@/services/api", () => ({
-      signInUser: vi.fn(),
-    }));
+  // Mock the entire api service
+  vi.mock("@/services/api", () => ({
+    signInUser: vi.fn(),
+  }));
 
-    test("successfully logs in and displays success message", async () => {
-      // Your test implementation here
-    });
-    ```
+  test("successfully logs in and displays success message", async () => {
+    // Your test implementation here
+  });
+  ```
 
 ## 5. Dependency Management [✅]
 
@@ -115,12 +115,12 @@ This audit outlines critical issues to be addressed before implementing tests wi
 
 **Recommendation:**
 
-* Move all testing-related packages to `devDependencies`.
+- Move all testing-related packages to `devDependencies`.
 
-    ```bash
-    # Example for one package
-    npm uninstall vitest && npm install --save-dev vitest
-    ```
+  ```bash
+  # Example for one package
+  npm uninstall vitest && npm install --save-dev vitest
+  ```
 
 ## 6. Code Quality & Anti-Patterns [⚪ Pending]
 

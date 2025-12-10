@@ -81,4 +81,3 @@ You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-re
       },
     ])
 ```
-
