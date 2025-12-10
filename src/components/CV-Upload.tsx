@@ -1,14 +1,12 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { uploadCv } from "@/services/api";
 
 const CVUpload = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [responseMessage, setResponseMessage] = useState<string | null>(null);
-
-  // Replace with your real API endpoint once it is available.
-  const API_ENDPOINT = "https://api.example.com/upload-cv";
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -19,7 +17,7 @@ const CVUpload = () => {
 
   const handleUpload = async () => {
     if (!selectedFile) {
-      alert("choose the file");
+      setResponseMessage("Please choose a file to upload.");
       return;
     }
 
@@ -30,16 +28,7 @@ const CVUpload = () => {
       setIsUploading(true);
       setResponseMessage(null);
 
-      const response = await fetch(API_ENDPOINT, {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error(`Upload failed with status ${response.status}`);
-      }
-
-      const data = await response.json().catch(() => null);
+      const data = await uploadCv(formData);
       const messageFromApi =
         data?.message ||
         "CV sent successfully. Replace API_ENDPOINT with your real backend URL.";
