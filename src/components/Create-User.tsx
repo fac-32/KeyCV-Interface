@@ -81,9 +81,7 @@ const CreateUser = () => {
           required
         />
 
-        <Button type="submit" variant="outline">
-          Create
-        </Button>
+        <Button type="submit">Create</Button>
       </form>
       <p>{message}</p>
     </section>

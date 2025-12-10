@@ -58,9 +58,7 @@ const LoginUser = () => {
           required
         />
 
-        <Button type="submit" variant="outline">
-          Log in
-        </Button>
+        <Button type="submit">Log in</Button>
       </form>
       <p>{message}</p>
     </section>

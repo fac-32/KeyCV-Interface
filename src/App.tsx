@@ -1,7 +1,6 @@
 import "./App.css";
 import CreateUser from "./components/Create-User";
 import LoginUser from "./components/Login-User";
-// import CVUpload from "./components/CV-Upload";
 import JobForm from "./components/JobForm";
 
 function App() {
@@ -9,7 +8,6 @@ function App() {
     <>
       <CreateUser />
       <LoginUser />
-      {/* <CVUpload /> */}
       <JobForm />
     </>
   );

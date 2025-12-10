@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { buildApiUrl } from "@/lib/api";
 import {
   Form,
   FormControl,
@@ -19,9 +20,7 @@ export default function JobForm() {
   const [isUploading, setIsUploading] = useState(false);
   const [responseMessage, setResponseMessage] = useState<string | null>(null);
 
-  // Replace with your real API endpoint
-  const API_ENDPOINT = "https://keycv.onrender.com/analyze-resume";
-  // const API_ENDPOINT = "/analyze-resume";
+  const API_ENDPOINT = buildApiUrl("api/ai/analyze-resume");
 
   // eslint-disable-next-line
   async function onSubmit(values: any) {
