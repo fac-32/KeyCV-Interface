@@ -128,4 +128,4 @@ This audit outlines critical issues to be addressed before implementing tests wi
 
 **Recommendation:**
 
-* Replace `alert()` calls with state-driven feedback mechanisms within the component's UI (e.g., displaying an error message in a `<p>` tag).
+* Replace alert() calls with state-driven feedback mechanisms within the component's UI (e.g., displaying an error message in a `<p>` tag).
