@@ -7,8 +7,8 @@ import { Routes, Route, Link } from "react-router";
 function App() {
   return (
     <>
-    <Link to='/KeyCV-Interface/'>Home</Link>
-    <Link to='/KeyCV-Interface/create-user'>Create User</Link>
+    <Link to='/KeyCV-Interface/'>Home</Link> |{" "}
+    <Link to='/KeyCV-Interface/create-user'>Create User</Link> |{" "}
     <Link to='/KeyCV-Interface/login-user'>Login</Link>
       <Routes>
         <Route path="/KeyCV-Interface/create-user" element={<CreateUser />} />
