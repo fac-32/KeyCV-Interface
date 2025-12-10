@@ -58,7 +58,7 @@ export default function JobForm() {
       form.reset();
     } catch (error) {
       setResponseMessage(
-        error instanceof Error ? error.message : "Submission failed."
+        error instanceof Error ? error.message : "Submission failed.",
       );
     } finally {
       setIsUploading(false);
