@@ -56,6 +56,7 @@ const CreateUser = () => {
       <form
         className="grid w-full max-w-sm items-center gap-3"
         onSubmit={submitHandler}
+        aria-label="Create Account Form"
       >
         <p>Create an account</p>
 
