@@ -7,8 +7,7 @@ import { Routes, Route, Link } from "react-router";
 function App() {
   return (
     <>
-      <Link to="/">Home</Link> |{" "}
-      <Link to="/create-user">Create User</Link> |{" "}
+      <Link to="/">Home</Link> | <Link to="/create-user">Create User</Link> |{" "}
       <Link to="/login-user">Login</Link>
       <Routes>
         <Route path="/create-user" element={<CreateUser />} />

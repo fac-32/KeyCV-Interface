@@ -48,10 +48,14 @@ describe("JobForm Component", () => {
 
     render(<JobForm />);
     const form = screen.getByRole("form");
-    const file = new File(["dummy content"], "resume.pdf", { type: "application/pdf" });
+    const file = new File(["dummy content"], "resume.pdf", {
+      type: "application/pdf",
+    });
 
     fireEvent.change(screen.getByLabelText(/Job Description/i), {
-      target: { value: "Software Engineer position requiring strong React skills." },
+      target: {
+        value: "Software Engineer position requiring strong React skills.",
+      },
     });
     const fileInput = screen.getByLabelText(/Attach CV/i);
     fireEvent.change(fileInput, { target: { files: [file] } });
@@ -85,12 +89,16 @@ describe("JobForm Component", () => {
 
     render(<JobForm />);
     const form = screen.getByRole("form");
-    const file = new File(["dummy content"], "resume.pdf", { type: "application/pdf" });
+    const file = new File(["dummy content"], "resume.pdf", {
+      type: "application/pdf",
+    });
 
     fireEvent.change(screen.getByLabelText(/Job Description/i), {
       target: { value: "Some job description." },
     });
-    fireEvent.change(screen.getByLabelText(/Attach CV/i), { target: { files: [file] } });
+    fireEvent.change(screen.getByLabelText(/Attach CV/i), {
+      target: { files: [file] },
+    });
 
     fireEvent.submit(form);
 
@@ -98,7 +106,9 @@ describe("JobForm Component", () => {
       expect(mockFetch).toHaveBeenCalledTimes(1);
     });
 
-    const errorMessage = await screen.findByText(/Submission failed with status 400/i);
+    const errorMessage = await screen.findByText(
+      /Submission failed with status 400/i,
+    );
     expect(errorMessage).toBeInTheDocument();
   });
 
@@ -107,12 +117,16 @@ describe("JobForm Component", () => {
 
     render(<JobForm />);
     const form = screen.getByRole("form");
-    const file = new File(["dummy content"], "resume.pdf", { type: "application/pdf" });
+    const file = new File(["dummy content"], "resume.pdf", {
+      type: "application/pdf",
+    });
 
     fireEvent.change(screen.getByLabelText(/Job Description/i), {
       target: { value: "Some job description." },
     });
-    fireEvent.change(screen.getByLabelText(/Attach CV/i), { target: { files: [file] } });
+    fireEvent.change(screen.getByLabelText(/Attach CV/i), {
+      target: { files: [file] },
+    });
 
     fireEvent.submit(form);
 
@@ -130,12 +144,16 @@ describe("JobForm Component", () => {
     render(<JobForm />);
     const form = screen.getByRole("form");
     const submitButton = screen.getByRole("button", { name: /Submit/i });
-    const file = new File(["dummy content"], "resume.pdf", { type: "application/pdf" });
+    const file = new File(["dummy content"], "resume.pdf", {
+      type: "application/pdf",
+    });
 
     fireEvent.change(screen.getByLabelText(/Job Description/i), {
       target: { value: "Some job description." },
     });
-    fireEvent.change(screen.getByLabelText(/Attach CV/i), { target: { files: [file] } });
+    fireEvent.change(screen.getByLabelText(/Attach CV/i), {
+      target: { files: [file] },
+    });
 
     fireEvent.submit(form);
 

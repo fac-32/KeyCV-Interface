@@ -2,11 +2,7 @@
 
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, test, expect, vi, beforeEach } from "vitest";
-import type {
-  AuthError,
-  PostgrestError,
-  User,
-} from "@supabase/supabase-js";
+import type { AuthError, PostgrestError, User } from "@supabase/supabase-js";
 import CreateUser from "./Create-User";
 
 // Mock the API service module

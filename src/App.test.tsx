@@ -56,7 +56,6 @@ const renderApp = (initialPath = APP_BASENAME) => {
   render(<App />);
 };
 
-
 describe("App Component - Routing (Mocked React Router)", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -85,9 +84,6 @@ describe("App Component - Routing (Mocked React Router)", () => {
       "href",
       "/create-user",
     );
-    expect(screen.getByText("Login")).toHaveAttribute(
-      "href",
-      "/login-user",
-    );
+    expect(screen.getByText("Login")).toHaveAttribute("href", "/login-user");
   });
 });
