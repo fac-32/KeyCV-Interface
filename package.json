@@ -11,7 +11,7 @@
     "build": "tsc -b && vite build",
     "lint": "npm run lint:eslint && npm run lint:prettier",
     "lint:eslint": "eslint .",
-    "lint:prettier": "prettier . --check",
+    "lint:prettier": "npx prettier . --check",
     "preview": "vite preview",
     "start": "vite",
     "test": "vitest"

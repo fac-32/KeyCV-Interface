@@ -14,26 +14,32 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-// import { analyzeResume } from "@/services/api";
+
+// Define the shape of the form values
+type FormValues = {
+  "job-description": string;
+  cv: FileList | null;
+};
 
 export default function JobForm() {
-  const form = useForm();
+  const form = useForm<FormValues>({
+    defaultValues: {
+      "job-description": "",
+      cv: null,
+    },
+  });
   const [isUploading, setIsUploading] = useState(false);
   const [responseMessage, setResponseMessage] = useState<string | null>(null);
 
   const API_ENDPOINT = buildApiUrl("api/ai/analyze-resume");
 
-  // eslint-disable-next-line
-  async function onSubmit(values: any) {
+  async function onSubmit(values: FormValues) {
     setResponseMessage(null);
 
     const formData = new FormData();
-    // job-description uses the existing form field name
     formData.append("job_description", values["job-description"] || "");
 
-    // file input registered as "cv"
-    const fileList = form.getValues("cv") as FileList | undefined;
-    const file = fileList?.[0] ?? (values.cv && values.cv[0]);
+    const file = values.cv?.[0];
 
     if (!file) {
       setResponseMessage("Please attach a CV file.");
@@ -52,9 +58,7 @@ export default function JobForm() {
         throw new Error(`Submission failed with status ${res.status}`);
       }
       const data = await res.json().catch(() => null);
-      // console.log(data);
       setResponseMessage(data?.message || "Submitted successfully.");
-      // optionally reset the form
       form.reset();
     } catch (error) {
       setResponseMessage(
@@ -67,15 +71,28 @@ export default function JobForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div style={{ marginTop: 12 }}>
-          <FormLabel>Attach CV</FormLabel>
-          <Input
-            type="file"
-            accept=".doc,.docx,.pdf"
-            {...form.register("cv")}
-          />
-        </div>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        aria-label="Job Application Form"
+      >
+        <FormField
+          control={form.control}
+          name="cv"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel style={{ marginTop: 12 }}>Attach CV</FormLabel>
+              <FormControl>
+                <Input
+                  type="file"
+                  accept=".doc,.docx,.pdf"
+                  onChange={(e) => field.onChange(e.target.files)}
+                />
+              </FormControl>
+              <FormDescription />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <FormField
           control={form.control}
