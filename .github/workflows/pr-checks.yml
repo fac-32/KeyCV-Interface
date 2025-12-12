@@ -23,5 +23,5 @@ jobs:
       - name: Prettier Eslint check
         run: npm run lint
 
-      - name: Verify clean tree
-        run: git diff --exit-code
+      - name: Build
+        run: npm run build
