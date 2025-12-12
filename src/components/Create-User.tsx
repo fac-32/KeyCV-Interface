@@ -38,8 +38,13 @@ const CreateUser = () => {
         data: { user },
       } = await getCurrentUser();
 
+      if (!user?.id) {
+        setMessage("An error has occured while creating your account");
+        return;
+      }
+
       // insert a user in the public.users relation with auth.users.id as FK PK
-      const { error } = await insertUser(user?.id);
+      const { error } = await insertUser(user.id);
 
       if (error?.code === "23505") {
         setMessage(`This email is already in use`);

@@ -2,17 +2,11 @@ import supabase from "@/lib/supabaseClient";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-/**
- * ============================================================================
- * Auth Functions
- * ============================================================================
- */
-
-export const signUpUser = (email, password) => {
+export const signUpUser = (email: string, password: string) => {
   return supabase.auth.signUp({ email, password });
 };
 
-export const signInUser = (email, password) => {
+export const signInUser = (email: string, password: string) => {
   return supabase.auth.signInWithPassword({ email, password });
 };
 
@@ -20,7 +14,7 @@ export const getCurrentUser = () => {
   return supabase.auth.getUser();
 };
 
-export const insertUser = (userId) => {
+export const insertUser = (userId: string) => {
   return supabase.from("users").insert({ user_id: userId });
 };
 
@@ -30,7 +24,7 @@ export const insertUser = (userId) => {
  * ============================================================================
  */
 
-async function post(endpoint, body) {
+async function post(endpoint: string, body: RequestInit) {
   const url = `${API_BASE_URL}${endpoint}`;
   const response = await fetch(url, {
     method: "POST",
@@ -47,12 +41,12 @@ async function post(endpoint, body) {
   return response.json();
 }
 
-export const analyzeResume = (formData) => {
+export const analyzeResume = (formData: FormData) => {
   // The browser will set the correct Content-Type for FormData
   return post("/analyze-resume", { body: formData });
 };
 
-export const uploadCv = (formData) => {
+export const uploadCv = (formData: FormData) => {
   // The browser will set the correct Content-Type for FormData
   return post("/upload-cv", { body: formData });
 };
