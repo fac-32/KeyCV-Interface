@@ -42,22 +42,22 @@ export type Database = {
       cvs: {
         Row: {
           created_at: string
-          cv: string | null
           cv_id: number
+          cv_storage_id: string | null
           name: string | null
           user_id: string
         }
         Insert: {
           created_at?: string
-          cv?: string | null
           cv_id?: number
+          cv_storage_id?: string | null
           name?: string | null
           user_id: string
         }
         Update: {
           created_at?: string
-          cv?: string | null
           cv_id?: number
+          cv_storage_id?: string | null
           name?: string | null
           user_id?: string
         }

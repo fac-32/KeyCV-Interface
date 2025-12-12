@@ -99,13 +99,32 @@ export default function JobForm() {
       return setSaveMessage("Unable to save as the feedback, job description, or CV is missing");
     }
 
-    // get back cvID with matching name
-
+    // TO DO: fetch cv_id corresponding to cvName
+    // const { data: cvID, error: fetchCVError } = await supabase.from("cvs").select("cv_id").eq("user_id", user.id);
 
     // const cvIDresponse = await supabase.from("cvs").select("cv_id");
     // console.log(cvIDresponse);
 
-    // if it does not exist, insert a new cv with cvName and resume
+    // if it does not exist, insert a new cv with cvName and resume in storage
+    const path = `${user.id}/${analysis.cvName}.txt`;
+    const blob = new Blob([analysis.resume], { type: "text/plain" });
+    const { data: cvStorageInsert, error: cvStorageError } = await supabase.storage.from("cv_files").upload(path, blob, {
+      contentType: "text/plain",
+    });
+    console.log("saving to storage");
+    console.log(cvStorageInsert);
+    console.log(cvStorageError);
+
+    // console.log(JSON.stringify(insertCV));
+    if ( cvStorageError?.name === "StorageApiError" ) {
+      setSaveMessage("Upload error -  make sure you are signed in");
+    }
+
+    // link storage file to public cv relation
+    const { data: insertCV, error: insertCVError } = await supabase.from("cvs").insert({ user_id: user.id, name: cvName, cv_storage_id: cvStorageInsert?.id });
+    console.log("saving to public cvs");
+    console.log(insertCV);
+    console.log(insertCVError);
 
     // then insert a new job for the user
 
@@ -177,13 +196,22 @@ export default function JobForm() {
       </Form>
 
       <form onSubmit={saveSubmitHandler}>
-        <Input type="text" id="cv-name" onChange={(event) => setCvName(event.target.value)} placeholder="cv-fac-dec-2025" required />
+        <Input type="text" id="cv-name" value={cvName ?? ""} onChange={(event) => setCvName(event.target.value)} placeholder="cv-fac-dec-2025" required />
         <Button type="submit">Save</Button>
         {saveMessage && (
           <div style={{ marginTop: 12 }}>
             <p>{saveMessage}</p>
           </div>
         )}
+        <Button type="button" onClick={() => {
+          setAnalysis({
+        resume: "cool cv",
+        jobDescription: "my job now",
+        feedback: "your cv looks great youll definately land this",
+        cvName: "best-cv",
+    }); 
+    setCvName(analysis?.cvName ?? "");
+        }}>test button loads details</Button>
       </form>
     </>
   );
