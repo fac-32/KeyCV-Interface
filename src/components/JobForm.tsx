@@ -14,6 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
+import "./JobForm.css";
 
 // Define the shape of the form values
 type FormValues = {
@@ -70,61 +71,66 @@ export default function JobForm() {
   }
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        aria-label="Job Application Form"
-      >
-        <FormField
-          control={form.control}
-          name="cv"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel style={{ marginTop: 12 }}>Attach CV</FormLabel>
-              <FormControl>
-                <Input
-                  type="file"
-                  accept=".doc,.docx,.pdf"
-                  onChange={(e) => field.onChange(e.target.files)}
-                />
-              </FormControl>
-              <FormDescription />
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+    <div className="job-form__shell">
+      <div className="job-form__card">
+        <Form {...form}>
+          <form
+            className="job-form"
+            onSubmit={form.handleSubmit(onSubmit)}
+            aria-label="Job Application Form"
+          >
+            <FormField
+              control={form.control}
+              name="cv"
+              render={({ field }) => (
+                <FormItem className="job-form__field">
+                  <FormLabel>Attach CV</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="file"
+                      accept=".doc,.docx,.pdf"
+                      onChange={(e) => field.onChange(e.target.files)}
+                    />
+                  </FormControl>
+                  <FormDescription />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        <FormField
-          control={form.control}
-          name="job-description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel style={{ marginTop: 12 }}>Job Description</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Please paste job description here"
-                  {...field}
-                  required
-                />
-              </FormControl>
-              <FormDescription />
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+            <FormField
+              control={form.control}
+              name="job-description"
+              render={({ field }) => (
+                <FormItem className="job-form__field">
+                  <FormLabel>Job Description</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Please paste job description here"
+                      {...field}
+                      required
+                    />
+                  </FormControl>
+                  <FormDescription />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        {responseMessage && (
-          <div style={{ marginTop: 12 }}>
-            <p>{responseMessage}</p>
-          </div>
-        )}
+            {responseMessage && (
+              <div className="job-form__message">
+                <p>{responseMessage}</p>
+              </div>
+            )}
 
-        <div style={{ marginTop: 12 }}>
-          <Button type="submit" disabled={isUploading}>
-            {isUploading ? "Submitting..." : "Submit"}
-          </Button>
-        </div>
-      </form>
-    </Form>
+            <div className="job-form__actions">
+              <Button type="submit" disabled={isUploading}>
+                {isUploading ? "Submitting..." : "Submit"}
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </div>
+    </div>
   );
 }

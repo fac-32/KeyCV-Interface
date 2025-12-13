@@ -9,9 +9,12 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "npm run lint:eslint && npm run lint:prettier",
+    "lint": "npm run lint:eslint && npm run format:prettier",
+    "lint:fix": "npm run lint:eslint:fix && npm run format:prettier:fix",
     "lint:eslint": "eslint .",
-    "lint:prettier": "npx prettier . --check",
+    "lint:eslint:fix": "eslint . --fix",
+    "format:prettier": "npx prettier . --check",
+    "format:prettier:fix": "npx prettier . --write",
     "preview": "vite preview",
     "start": "vite",
     "test": "vitest"
