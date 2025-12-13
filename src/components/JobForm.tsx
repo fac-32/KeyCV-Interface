@@ -111,20 +111,19 @@ export default function JobForm() {
     const { data: cvStorageInsert, error: cvStorageError } = await supabase.storage.from("cv_files").upload(path, blob, {
       contentType: "text/plain",
     });
-    console.log("saving to storage");
-    console.log(cvStorageInsert);
-    console.log(cvStorageError);
 
-    // console.log(JSON.stringify(insertCV));
     if ( cvStorageError?.name === "StorageApiError" ) {
       setSaveMessage("Upload error -  make sure you are signed in");
     }
 
     // link storage file to public cv relation
-    const { data: insertCV, error: insertCVError } = await supabase.from("cvs").insert({ user_id: user.id, name: cvName, cv_storage_id: cvStorageInsert?.id });
-    console.log("saving to public cvs");
-    console.log(insertCV);
-    console.log(insertCVError);
+    const { error: insertCVError } = await supabase.from("cvs").insert({ user_id: user.id, name: cvName, cv_storage_id: cvStorageInsert?.id });
+    if ( insertCVError ) {
+      setSaveMessage("There has been an error while saving your cv");
+    } else {
+      setSaveMessage("CV saved successfully");
+    }
+
 
     // then insert a new job for the user
 
