@@ -3,9 +3,9 @@ import { signUpUser, getCurrentUser, insertUser } from "@/services/api";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Route, Link, Routes } from "react-router";
-import "./Create-User.css";
-import LoginUser from "./Login-User";
+import { Link } from "react-router";
+import "./Auth.css";
+import "./JobForm.css";
 
 const CreateUser = () => {
   const [email, setEmail] = useState<string>("");
@@ -53,47 +53,64 @@ const CreateUser = () => {
         setMessage(`This email is already in use`);
       } else {
         setMessage(
-          `Account created successfully ${/*, please verify your email*/ ""}`,
+          `Account created successfully ${/*, please verify your email*/ ""}`
         ); // I remove email verification for quick testing
       }
     }
   };
 
   return (
-    <section>
-      <Routes>
-        <Route path="/login-user" element={<LoginUser />} />
-      </Routes>
-      <form
-        className="grid w-full max-w-sm items-center gap-3"
-        onSubmit={submitHandler}
-        aria-label="Create Account Form"
-      >
-        <p>Create a new account</p>
+    <section className="job-form__shell">
+      <div className="job-form__card">
+        <form
+          className="job-form"
+          onSubmit={submitHandler}
+          aria-label="Create Account Form"
+        >
+          <h2>Create a new account</h2>
 
-        <Label htmlFor="signup-email">Email</Label>
-        <Input
-          type="email"
-          id="signup-email"
-          onChange={(event) => setEmail(event.target.value)}
-          placeholder="example@email.com"
-          required
-        />
+          <div className="job-form__field">
+            <Label htmlFor="signup-email">Email</Label>
+            <Input
+              type="email"
+              id="signup-email"
+              name="email"
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder="example@email.com"
+              autoComplete="email"
+              required
+            />
+          </div>
 
-        <Label htmlFor="signup-password">Password</Label>
-        <Input
-          type="password"
-          id="signup-password"
-          onChange={(event) => setPassword(event.target.value)}
-          required
-        />
+          <div className="job-form__field">
+            <Label htmlFor="signup-password">Password</Label>
+            <Input
+              type="password"
+              id="signup-password"
+              name="new-password"
+              onChange={(event) => setPassword(event.target.value)}
+              autoComplete="new-password"
+              required
+            />
+          </div>
 
-        <Button type="submit">Sign Up</Button>
-        <Link to="/login-user" className="text-small">
-          Alredy have account?
-        </Link>
-      </form>
-      <p>{message}</p>
+          {message && (
+            <div>
+              <p>{message}</p>
+            </div>
+          )}
+
+          <div className="job-form__actions">
+            <Button type="submit">Sign Up</Button>
+          </div>
+
+          <div className="auth-footer">
+            <Link to="/login-user" className="text-small">
+              Already have an account?
+            </Link>
+          </div>
+        </form>
+      </div>
     </section>
   );
 };

@@ -96,7 +96,7 @@
 
 .job-form__actions {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   margin-top: 0.5rem;
 }
 
