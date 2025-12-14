@@ -3,6 +3,9 @@ import { signUpUser, getCurrentUser, insertUser } from "@/services/api";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Route, Link, Routes } from "react-router";
+import "./Create-User.css";
+import LoginUser from "./Login-User";
 
 const CreateUser = () => {
   const [email, setEmail] = useState<string>("");
@@ -58,12 +61,15 @@ const CreateUser = () => {
 
   return (
     <section>
+      <Routes>
+        <Route path="/login-user" element={<LoginUser />} />
+      </Routes>
       <form
         className="grid w-full max-w-sm items-center gap-3"
         onSubmit={submitHandler}
         aria-label="Create Account Form"
       >
-        <p>Create an account</p>
+        <p>Create a new account</p>
 
         <Label htmlFor="signup-email">Email</Label>
         <Input
@@ -82,7 +88,10 @@ const CreateUser = () => {
           required
         />
 
-        <Button type="submit">Create</Button>
+        <Button type="submit">Sign Up</Button>
+        <Link to="/login-user" className="text-small">
+          Alredy have account?
+        </Link>
       </form>
       <p>{message}</p>
     </section>

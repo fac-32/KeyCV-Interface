@@ -3,6 +3,8 @@ import { signInUser } from "@/services/api";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Link, Route, Routes } from "react-router-dom";
+import CreateUser from "./Create-User";
 
 const LoginUser = () => {
   const [email, setEmail] = useState<string>("");
@@ -32,11 +34,14 @@ const LoginUser = () => {
 
   return (
     <section>
+      <Routes>
+        <Route path="/create-user" element={<CreateUser />} />
+      </Routes>
       <form
         className="grid w-full max-w-sm items-center gap-3"
         onSubmit={submitHandler}
       >
-        <p>Log into existing account</p>
+        <p>Sign in an existing account</p>
 
         <Label htmlFor="login-email">Email</Label>
         <Input
@@ -55,7 +60,10 @@ const LoginUser = () => {
           required
         />
 
-        <Button type="submit">Log in</Button>
+        <Button type="submit">Sign in</Button>
+        <Link to="/create-user" className="text-small">
+          Create a new account
+        </Link>
       </form>
       <p>{message}</p>
     </section>

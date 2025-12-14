@@ -8,9 +8,9 @@ function App() {
   return (
     <div className="app-shell">
       <nav className="app-nav">
-        <Link to="/">Home</Link>
-        <Link to="/create-user">Create User</Link>
-        <Link to="/login-user">Login</Link>
+        <Link to="/">KeyCV</Link>
+        <Link to="/create-user">Join to us</Link>
+        <Link to="/login-user">Sign In</Link>
       </nav>
       <main className="app-main">
         <Routes>
