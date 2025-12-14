@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
@@ -37,6 +37,7 @@ export default function JobForm() {
       cv: null,
     },
   });
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [responseMessage, setResponseMessage] = useState<string | null>(null);
   const [analysisResult, setAnalysisResult] =
@@ -46,6 +47,16 @@ export default function JobForm() {
   >(null);
 
   const API_ENDPOINT = buildApiUrl("api/ai/analyze-resume");
+
+  const resetFormState = () => {
+    form.reset({
+      "job-description": "",
+      cv: null,
+    });
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
 
   async function onSubmit(values: FormValues) {
     setResponseMessage(null);
@@ -82,10 +93,6 @@ export default function JobForm() {
         throw new Error(message);
       }
 
-      setResponseMessage(
-        (data && typeof data.message === "string" && data.message) ||
-          "Analysis complete.",
-      );
       const parsed: AnalyzeResumeResponse = {
         matchScore: Number(data?.matchScore) || 0,
         presentKeywords: Array.isArray(data?.presentKeywords)
@@ -101,7 +108,7 @@ export default function JobForm() {
 
       setSubmittedJobDescription(values["job-description"] || "");
       setAnalysisResult(parsed);
-      form.reset();
+      resetFormState();
     } catch (error) {
       setResponseMessage(
         error instanceof Error ? error.message : "Submission failed.",
@@ -134,9 +141,20 @@ export default function JobForm() {
                   <FormLabel>Attach CV</FormLabel>
                   <FormControl>
                     <Input
+                      ref={(element) => {
+                        field.ref(element);
+                        fileInputRef.current = element;
+                      }}
+                      name={field.name}
                       type="file"
                       accept=".doc,.docx,.pdf"
-                      onChange={(e) => field.onChange(e.target.files)}
+                      onBlur={field.onBlur}
+                      onChange={(e) => {
+                        const files = e.target.files;
+                        const nextValue =
+                          files && files.length > 0 ? files : null;
+                        field.onChange(nextValue);
+                      }}
                     />
                   </FormControl>
                   <FormDescription />
