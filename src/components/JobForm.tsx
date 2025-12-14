@@ -15,11 +15,19 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import "./JobForm.css";
+import "./loader.css";
 
 // Define the shape of the form values
 type FormValues = {
   "job-description": string;
   cv: FileList | null;
+};
+
+type AnalyzeResumeResponse = {
+  matchScore: number;
+  presentKeywords: string[];
+  missingKeywords: string[];
+  recommendations: string[];
 };
 
 export default function JobForm() {
@@ -31,11 +39,18 @@ export default function JobForm() {
   });
   const [isUploading, setIsUploading] = useState(false);
   const [responseMessage, setResponseMessage] = useState<string | null>(null);
+  const [analysisResult, setAnalysisResult] =
+    useState<AnalyzeResumeResponse | null>(null);
+  const [submittedJobDescription, setSubmittedJobDescription] = useState<
+    string | null
+  >(null);
 
   const API_ENDPOINT = buildApiUrl("api/ai/analyze-resume");
 
   async function onSubmit(values: FormValues) {
     setResponseMessage(null);
+    setAnalysisResult(null);
+    setSubmittedJobDescription(null);
 
     const formData = new FormData();
     formData.append("job_description", values["job-description"] || "");
@@ -55,11 +70,30 @@ export default function JobForm() {
         method: "POST",
         body: formData,
       });
-      if (!res.ok) {
-        throw new Error(`Submission failed with status ${res.status}`);
-      }
       const data = await res.json().catch(() => null);
-      setResponseMessage(data?.message || "Submitted successfully.");
+
+      if (!res.ok) {
+        const message =
+          (data && typeof data.error === "string" && data.error) ||
+          `Submission failed with status ${res.status}`;
+        throw new Error(message);
+      }
+
+      const parsed: AnalyzeResumeResponse = {
+        matchScore: Number(data?.matchScore) || 0,
+        presentKeywords: Array.isArray(data?.presentKeywords)
+          ? data.presentKeywords
+          : [],
+        missingKeywords: Array.isArray(data?.missingKeywords)
+          ? data.missingKeywords
+          : [],
+        recommendations: Array.isArray(data?.recommendations)
+          ? data.recommendations
+          : [],
+      };
+
+      setSubmittedJobDescription(values["job-description"] || "");
+      setAnalysisResult(parsed);
       form.reset();
     } catch (error) {
       setResponseMessage(
@@ -72,6 +106,12 @@ export default function JobForm() {
 
   return (
     <div className="job-form__shell">
+      {isUploading && (
+        <div className="loading-overlay" aria-live="polite" aria-busy="true">
+          <div className="loader loader--large" role="status" />
+          <p className="loading-overlay__text">AI is analyzing your resume…</p>
+        </div>
+      )}
       <div className="job-form__card">
         <Form {...form}>
           <form
@@ -131,6 +171,87 @@ export default function JobForm() {
           </form>
         </Form>
       </div>
+      {analysisResult && (
+        <div className="result-summary" aria-live="polite">
+          <div className="result-summary__label">Match score</div>
+          <div className="result-summary__value">
+            {Math.round(analysisResult.matchScore)}%
+          </div>
+        </div>
+      )}
+      {analysisResult && (
+        <div className="result-grid">
+          <div className="result-card">
+            <section
+              className="result-jobdesc"
+              aria-label="Submitted job description"
+            >
+              <header className="result-section__header">
+                <p className="result-section__label">Job description</p>
+              </header>
+              <div className="result-jobdesc__body">
+                <div className="result-jobdesc__text">
+                  {submittedJobDescription?.trim() || "—"}
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <div className="result-card">
+            <section
+              className="result-analysis"
+              aria-label="AI analysis result"
+            >
+              <div className="result-analysis__header">
+                <p className="result-section__label">AI insights</p>
+              </div>
+
+              <div className="result-analysis__grid">
+                <div className="result-panel">
+                  <h4>Keywords found in resume</h4>
+                  {analysisResult.presentKeywords.length ? (
+                    <ul>
+                      {analysisResult.presentKeywords.map((item, idx) => (
+                        <li key={`${item}-${idx}`}>- {item}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="result-muted">No matches found.</p>
+                  )}
+                </div>
+
+                <div className="result-panel">
+                  <h4>Missing keywords</h4>
+                  {analysisResult.missingKeywords.length ? (
+                    <ul>
+                      {analysisResult.missingKeywords.map((item, idx) => (
+                        <li key={`${item}-${idx}`}>- {item}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="result-muted">
+                      No missing keywords returned by backend.
+                    </p>
+                  )}
+                </div>
+
+                <div className="result-panel result-panel--full">
+                  <h4>Recommendations</h4>
+                  {analysisResult.recommendations.length ? (
+                    <ul>
+                      {analysisResult.recommendations.map((item, idx) => (
+                        <li key={`${item}-${idx}`}>- {item}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="result-muted">No recommendations received.</p>
+                  )}
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
