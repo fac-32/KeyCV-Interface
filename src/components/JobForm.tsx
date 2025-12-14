@@ -71,7 +71,9 @@ export default function JobForm() {
         body: formData,
       });
       const data =
-        typeof res.json === "function" ? await res.json().catch(() => null) : null;
+        typeof res.json === "function"
+          ? await res.json().catch(() => null)
+          : null;
 
       if (!res.ok) {
         const message =
