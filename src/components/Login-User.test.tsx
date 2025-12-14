@@ -1,5 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, test, expect, vi } from "vitest";
+import { MemoryRouter } from "react-router-dom";
 import {
   AuthError,
   type AuthTokenResponsePassword,
@@ -41,7 +42,11 @@ describe("LoginUser Component", () => {
     const { signInUser } = await import("@/services/api");
     vi.mocked(signInUser).mockResolvedValue(successfulResponse);
 
-    render(<LoginUser />);
+    render(
+      <MemoryRouter>
+        <LoginUser />
+      </MemoryRouter>,
+    );
 
     // Simulate user input
     fireEvent.change(screen.getByLabelText(/Email/i), {
@@ -52,12 +57,10 @@ describe("LoginUser Component", () => {
     });
 
     // Simulate form submission
-    fireEvent.click(screen.getByRole("button", { name: /Log in/i }));
+    fireEvent.click(screen.getByRole("button", { name: /Sign in/i }));
 
     // Wait for and assert that the success message is displayed
-    const successMessage = await screen.findByText(
-      /Logged in as test@example.com/i,
-    );
+    const successMessage = await screen.findByText(/You are signed in/i);
     expect(successMessage).toBeInTheDocument();
   });
 
@@ -75,7 +78,11 @@ describe("LoginUser Component", () => {
     const { signInUser } = await import("@/services/api");
     vi.mocked(signInUser).mockResolvedValue(failedResponse);
 
-    render(<LoginUser />);
+    render(
+      <MemoryRouter>
+        <LoginUser />
+      </MemoryRouter>,
+    );
 
     // Simulate user input
     fireEvent.change(screen.getByLabelText(/Email/i), {
@@ -86,7 +93,7 @@ describe("LoginUser Component", () => {
     });
 
     // Simulate form submission
-    fireEvent.click(screen.getByRole("button", { name: /Log in/i }));
+    fireEvent.click(screen.getByRole("button", { name: /Sign in/i }));
 
     // Wait for and assert that the error message is displayed
     const errorMessage = await screen.findByText(

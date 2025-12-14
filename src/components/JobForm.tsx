@@ -106,6 +106,12 @@ export default function JobForm() {
           : [],
       };
 
+      const successMessage =
+        typeof data?.message === "string" && data.message.trim().length
+          ? data.message
+          : "Analysis complete.";
+
+      setResponseMessage(successMessage);
       setSubmittedJobDescription(values["job-description"] || "");
       setAnalysisResult(parsed);
       resetFormState();
