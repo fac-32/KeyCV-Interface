@@ -70,7 +70,8 @@ export default function JobForm() {
         method: "POST",
         body: formData,
       });
-      const data = await res.json().catch(() => null);
+      const data =
+        typeof res.json === "function" ? await res.json().catch(() => null) : null;
 
       if (!res.ok) {
         const message =
@@ -79,6 +80,10 @@ export default function JobForm() {
         throw new Error(message);
       }
 
+      setResponseMessage(
+        (data && typeof data.message === "string" && data.message) ||
+          "Analysis complete.",
+      );
       const parsed: AnalyzeResumeResponse = {
         matchScore: Number(data?.matchScore) || 0,
         presentKeywords: Array.isArray(data?.presentKeywords)
@@ -184,7 +189,7 @@ export default function JobForm() {
           <div className="result-card">
             <section
               className="result-jobdesc"
-              aria-label="Submitted job description"
+              aria-label="Submitted job details"
             >
               <header className="result-section__header">
                 <p className="result-section__label">Job description</p>
