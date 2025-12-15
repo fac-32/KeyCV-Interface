@@ -26,8 +26,8 @@ export default function JobForm() {
     resume: string;
     jobDescription: string;
     feedback: string;
-    cvName?: string
   } | null>(null);
+
   const [cvName, setCvName] = useState<string | null>(null);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
 
@@ -99,6 +99,10 @@ export default function JobForm() {
       return setSaveMessage("Unable to save as the feedback, job description, or CV is missing");
     }
 
+    if (!cvName ) {
+      return setSaveMessage("An existing or new CV name must be provided");
+    }
+
     // fetch cv_id corresponding to cvName
     const { data: fetchCV, error: fetchCVError } = await supabase.from("cvs").select("cv_id").eq("name", cvName);
     let FK_CV_ID : number;
@@ -111,7 +115,7 @@ export default function JobForm() {
       FK_CV_ID = fetchCV[0].cv_id;
     } else {
       // if it does not exist, insert a new cv with cvName and resume in storage
-      const path = `${user.id}/${analysis.cvName}.txt`;
+      const path = `${user.id}/${cvName}.txt`;
       const blob = new Blob([analysis.resume], { type: "text/plain" });
       const { data: cvStorageInsert, error: cvStorageError } = await supabase.storage.from("cv_files").upload(path, blob, {
         contentType: "text/plain",
@@ -133,15 +137,15 @@ export default function JobForm() {
       }
 
       FK_CV_ID = newFetchCV[0].cv_id;
+    } 
+    
+    // then insert a new job/feedback for the user
+    const { error: insertJobError } = await supabase.from("jobs").insert({ user_id: user.id, job_description: analysis.jobDescription, gen_feedback: analysis.feedback, cv_id: FK_CV_ID });
+    if ( insertJobError ) {
+      return setSaveMessage("There has been an error while saving your feedbck");
+    }
 
-      // then insert a new job/feedback for the user
-      const { error: insertJobError } = await supabase.from("jobs").insert({ user_id: user.id, job_description: analysis.jobDescription, gen_feedback: analysis.feedback, cv_id: FK_CV_ID });
-      if ( insertJobError ) {
-        return setSaveMessage("There has been an error while saving your feedbck");
-      }
-
-      setSaveMessage("CV saved successfully");
-    }    
+    setSaveMessage("CV saved successfully");
   }
 
   return (
@@ -198,7 +202,7 @@ export default function JobForm() {
             <p>{saveMessage}</p>
           </div>
         )}
-        <Button type="button" onClick={() => {
+        {/* <Button type="button" onClick={() => {
           setAnalysis({
         resume: "cool cv",
         jobDescription: "my job now",
@@ -206,7 +210,7 @@ export default function JobForm() {
         cvName: "best-cv",
     }); 
     setCvName(analysis?.cvName ?? "");
-        }}>test button loads details</Button>
+        }}>test button loads details</Button> */}
       </form>
     </>
   );
