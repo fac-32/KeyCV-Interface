@@ -1,4 +1,16 @@
-export default function ResultCard ({ jobDescription, feedback }) {
+type generatedFeedback = {
+    matchScore: number;
+    presentKeywords: string[];
+    missingKeywords: string[];
+    recommendations: string[];
+}
+
+type FeedbackElement = {
+    jobDescription: string | null;
+    feedback: generatedFeedback | null;
+}
+
+export default function ResultCard ({ jobDescription, feedback }: FeedbackElement) {
 
     return (
         <div className="result-grid">
@@ -30,7 +42,7 @@ export default function ResultCard ({ jobDescription, feedback }) {
               <div className="result-analysis__grid">
                 <div className="result-panel">
                   <h4>Keywords found in resume</h4>
-                  {feedback.presentKeywords.length ? (
+                  {feedback?.presentKeywords.length ? (
                     <ul>
                       {feedback.presentKeywords.map((item, idx) => (
                         <li key={`${item}-${idx}`}>- {item}</li>
@@ -43,7 +55,7 @@ export default function ResultCard ({ jobDescription, feedback }) {
 
                 <div className="result-panel">
                   <h4>Missing keywords</h4>
-                  {feedback.missingKeywords.length ? (
+                  {feedback?.missingKeywords.length ? (
                     <ul>
                       {feedback.missingKeywords.map((item, idx) => (
                         <li key={`${item}-${idx}`}>- {item}</li>
@@ -58,7 +70,7 @@ export default function ResultCard ({ jobDescription, feedback }) {
 
                 <div className="result-panel result-panel--full">
                   <h4>Recommendations</h4>
-                  {feedback.recommendations.length ? (
+                  {feedback?.recommendations.length ? (
                     <ul>
                       {feedback.recommendations.map((item, idx) => (
                         <li key={`${item}-${idx}`}>- {item}</li>

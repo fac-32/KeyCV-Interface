@@ -39,7 +39,7 @@ export default function Feedback() {
         <>
             {message && <p>{message}</p>}
             {allFeedback.length > 0 && 
-                <ul>{allFeedback.map(f => <li><ResultCard jobDescription={f.job_description} feedback={f.gen_feedback}/></li>)}</ul>
+                <ul>{allFeedback.map((item, index) => <li key={index}><ResultCard jobDescription={item.job_description} feedback={item.gen_feedback}/></li>)}</ul>
             }
         </>
     );
