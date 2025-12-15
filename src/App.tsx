@@ -40,17 +40,23 @@ function App() {
 
   useEffect(() => {
     async function getSignedStatus() {
-      const { data: { user }, } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       setIsSignedIn(!!user);
     }
 
-    const { data: { subscription} } = supabase.auth.onAuthStateChange((_event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setIsSignedIn(!!session?.user);
     });
 
     getSignedStatus();
 
-    return () => { subscription.unsubscribe() };
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   const handleLogOut = async () => {
@@ -68,11 +74,21 @@ function App() {
         </div>
         <div className="app-nav__center"> We highlight what matters</div>
         <div className="app-nav__actions">
-          {isSignedIn ? <Link to="/feedback">Past feedback</Link> : <Link to="/create-user">Join to us</Link>}
+          {isSignedIn ? (
+            <Link to="/feedback">Past feedback</Link>
+          ) : (
+            <Link to="/create-user">Join to us</Link>
+          )}
           <span className="app-nav__divider" aria-hidden="true">
             |
           </span>
-          {isSignedIn ? <Link to="/" onClick={handleLogOut}>Log out</Link> : <Link to="/login-user">Sign In</Link>}
+          {isSignedIn ? (
+            <Link to="/" onClick={handleLogOut}>
+              Log out
+            </Link>
+          ) : (
+            <Link to="/login-user">Sign In</Link>
+          )}
           <Button
             aria-label="Toggle theme"
             variant="ghost"
