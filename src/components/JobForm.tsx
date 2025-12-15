@@ -150,7 +150,7 @@ export default function JobForm() {
       form.reset();
     } catch (error) {
       setResponseMessage(
-        error instanceof Error ? error.message : "Submission failed.",
+        error instanceof Error ? error.message : "Submission failed."
       );
     } finally {
       setIsUploading(false);
@@ -173,7 +173,7 @@ export default function JobForm() {
     // check if there is something to save first
     if (!analysis?.resume || !analysis.jobDescription || !analysis.feedback) {
       return setSaveMessage(
-        "Unable to save as the feedback, job description, or CV is missing",
+        "Unable to save as the feedback, job description, or CV is missing"
       );
     }
 
@@ -190,7 +190,7 @@ export default function JobForm() {
 
     if (fetchCVError) {
       return setSaveMessage(
-        "There has been an error fetching your previously saved CV",
+        "There has been an error fetching your previously saved CV"
       );
     }
 
@@ -240,7 +240,7 @@ export default function JobForm() {
     });
     if (insertJobError) {
       return setSaveMessage(
-        "There has been an error while saving your feedbck",
+        "There has been an error while saving your feedbck"
       );
     }
 
@@ -313,7 +313,7 @@ export default function JobForm() {
 
             {responseMessage && (
               <div className="job-form__message">
-                <p>{responseMessage}</p>
+                <div>{responseMessage}</div>
               </div>
             )}
 

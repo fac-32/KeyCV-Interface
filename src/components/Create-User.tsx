@@ -4,7 +4,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Link } from "react-router-dom";
-import "./Auth.css";
 import "./JobForm.css";
 
 const CreateUser = () => {
@@ -53,7 +52,7 @@ const CreateUser = () => {
         setMessage(`This email is already in use`);
       } else {
         setMessage(
-          `Account created successfully ${/*, please verify your email*/ ""}`,
+          `Account created successfully ${/*, please verify your email*/ ""}`
         ); // I remove email verification for quick testing
       }
     }
@@ -95,8 +94,8 @@ const CreateUser = () => {
           </div>
 
           {message && (
-            <div>
-              <p>{message}</p>
+            <div className="job-form__message">
+              <div>{message}</div>
             </div>
           )}
 
