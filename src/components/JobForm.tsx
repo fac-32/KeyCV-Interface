@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { buildApiUrl } from "@/lib/api";
@@ -408,22 +407,21 @@ export default function JobForm() {
       )}
 
       {isSignedIn && (
-        <form onSubmit={saveSubmitHandler}>
-          <Label htmlFor="cv-name">CV name</Label>
-          <Input
-            type="text"
-            id="cv-name"
-            value={cvName ?? ""}
-            onChange={(event) => setCvName(event.target.value)}
-            placeholder="cv-fac-dec-2025"
-            required
-          />
-          <Button type="submit">Save</Button>
-          {saveMessage && (
-            <div style={{ marginTop: 12 }}>
-              <p>{saveMessage}</p>
-            </div>
-          )}
+        <form className="cv-save" onSubmit={saveSubmitHandler}>
+          <div className="cv-save__field">
+            <Input
+              type="text"
+              id="cv-name"
+              value={cvName ?? ""}
+              onChange={(event) => setCvName(event.target.value)}
+              placeholder="Application name"
+              required
+            />
+          </div>
+          <div className="cv-save__actions">
+            <Button type="submit">Save</Button>
+          </div>
+          {saveMessage && <p className="cv-save__message">{saveMessage}</p>}
         </form>
       )}
     </div>

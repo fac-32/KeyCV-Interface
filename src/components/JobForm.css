@@ -135,6 +135,33 @@
   word-break: break-word;
 }
 
+.cv-save {
+  margin: 1.75rem auto 0;
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: row;
+  gap: 0.7rem;
+  align-items: center;
+}
+
+.cv-save__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.cv-save__actions {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.cv-save__message {
+  margin: 0;
+  color: var(--foreground);
+  font-size: 0.95rem;
+}
+
 .result-analysis {
   display: flex;
   flex-direction: column;
