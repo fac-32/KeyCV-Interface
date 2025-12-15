@@ -86,7 +86,7 @@ export default function JobForm() {
 
   const saveSubmitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // const { error } = await supabase.auth.signOut() ///////////////////////// debugging command
+    // const { error } = await supabase.auth.signOut() ////// debugging command
 
     // fetch signed in users
     const { data: { user } } = await supabase.auth.getUser();
@@ -99,53 +99,49 @@ export default function JobForm() {
       return setSaveMessage("Unable to save as the feedback, job description, or CV is missing");
     }
 
-    // TO DO: fetch cv_id corresponding to cvName
-    // const { data: cvID, error: fetchCVError } = await supabase.from("cvs").select("cv_id").eq("user_id", user.id);
-
-    // const cvIDresponse = await supabase.from("cvs").select("cv_id");
-    // console.log(cvIDresponse);
-
-    // if it does not exist, insert a new cv with cvName and resume in storage
-    const path = `${user.id}/${analysis.cvName}.txt`;
-    const blob = new Blob([analysis.resume], { type: "text/plain" });
-    const { data: cvStorageInsert, error: cvStorageError } = await supabase.storage.from("cv_files").upload(path, blob, {
-      contentType: "text/plain",
-    });
-
-    if ( cvStorageError?.name === "StorageApiError" ) {
-      setSaveMessage("Upload error -  make sure you are signed in");
-    }
-
-    // link storage file to public cv relation
-    const { error: insertCVError } = await supabase.from("cvs").insert({ user_id: user.id, name: cvName, cv_storage_id: cvStorageInsert?.id });
-    if ( insertCVError ) {
-      setSaveMessage("There has been an error while saving your cv");
-    } else {
-      setSaveMessage("CV saved successfully");
-    }
-
-
-    // then insert a new job for the user
-
-    // TO DO: build two separate API endpoints
-    // try {
-    //   const res = await fetch(buildApiUrl("api/supabase/save"), {
-    //     method: "POST",
-    //     headers: { "Content-Type": "application/json"},
-    //     body: JSON.stringify({
-    //       resume: analysis?.resume,
-    //       jobDescription: analysis?.jobDescription,
-    //       feedback: analysis?.feedback,
-    //       cvName: "placeholder name",
-    //     }),
-    //   });
-
-    //   const data = await res.json();
-    //   console.log(`successful route to save: ${data}`);
-    // } catch ( error ) {
-    //   console.log(`error when attempting saving: ${error}`)
-    // }
+    // fetch cv_id corresponding to cvName
+    const { data: fetchCV, error: fetchCVError } = await supabase.from("cvs").select("cv_id").eq("name", cvName);
+    let FK_CV_ID : number;
     
+    if ( fetchCVError ) {
+      return setSaveMessage("There has been an error fetching your previously saved CV");
+    }
+
+    if ( fetchCV.length !== 0 ) {
+      FK_CV_ID = fetchCV[0].cv_id;
+    } else {
+      // if it does not exist, insert a new cv with cvName and resume in storage
+      const path = `${user.id}/${analysis.cvName}.txt`;
+      const blob = new Blob([analysis.resume], { type: "text/plain" });
+      const { data: cvStorageInsert, error: cvStorageError } = await supabase.storage.from("cv_files").upload(path, blob, {
+        contentType: "text/plain",
+      });
+      
+      if ( cvStorageError ) {
+        return setSaveMessage("Upload error -  make sure you are signed in");
+      }
+
+      // link storage file to public cv relation
+      const { error: insertCVError } = await supabase.from("cvs").insert({ user_id: user.id, name: cvName, cv_storage_id: cvStorageInsert?.id });
+      if ( insertCVError ) {
+        return setSaveMessage("There has been an error while saving your CV");
+      } 
+
+      const { data: newFetchCV, error: newFetchCVError } = await supabase.from("cvs").select("cv_id").eq("name", cvName);
+      if ( newFetchCVError ) {
+        return setSaveMessage("There has been an error while saving your CV");
+      }
+
+      FK_CV_ID = newFetchCV[0].cv_id;
+
+      // then insert a new job/feedback for the user
+      const { error: insertJobError } = await supabase.from("jobs").insert({ user_id: user.id, job_description: analysis.jobDescription, gen_feedback: analysis.feedback, cv_id: FK_CV_ID });
+      if ( insertJobError ) {
+        return setSaveMessage("There has been an error while saving your feedbck");
+      }
+
+      setSaveMessage("CV saved successfully");
+    }    
   }
 
   return (
