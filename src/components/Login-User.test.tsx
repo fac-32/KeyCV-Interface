@@ -1,5 +1,12 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, test, expect, vi } from "vitest";
+import { MemoryRouter } from "react-router-dom";
+import {
+  AuthError,
+  type AuthTokenResponsePassword,
+  type Session,
+  type User,
+} from "@supabase/auth-js";
 import LoginUser from "./Login-User";
 
 // Mock the API service module
@@ -7,20 +14,39 @@ vi.mock("@/services/api", () => ({
   signInUser: vi.fn(),
 }));
 
+const mockUser: User = {
+  id: "mock-user-id",
+  app_metadata: {},
+  user_metadata: {},
+  aud: "authenticated",
+  created_at: new Date().toISOString(),
+  email: "test@example.com",
+};
+
+const mockSession: Session = {
+  access_token: "mock-access-token",
+  refresh_token: "mock-refresh-token",
+  token_type: "bearer",
+  expires_in: 3600,
+  expires_at: Math.floor(Date.now() / 1000) + 3600,
+  user: mockUser,
+};
+
 describe("LoginUser Component", () => {
   test("successfully logs in and displays success message", async () => {
-    const mockData = {
-      user: { email: "test@example.com" },
-      session: {}, // Add other necessary properties
+    const successfulResponse: AuthTokenResponsePassword = {
+      data: { user: mockUser, session: mockSession },
+      error: null,
     };
 
-    // Configure the mock to return a successful response
-    vi.mocked(await import("@/services/api")).signInUser.mockResolvedValue({
-      data: mockData,
-      error: null,
-    });
+    const { signInUser } = await import("@/services/api");
+    vi.mocked(signInUser).mockResolvedValue(successfulResponse);
 
-    render(<LoginUser />);
+    render(
+      <MemoryRouter>
+        <LoginUser />
+      </MemoryRouter>,
+    );
 
     // Simulate user input
     fireEvent.change(screen.getByLabelText(/Email/i), {
@@ -31,23 +57,32 @@ describe("LoginUser Component", () => {
     });
 
     // Simulate form submission
-    fireEvent.click(screen.getByRole("button", { name: /Log in/i }));
+    fireEvent.click(screen.getByRole("button", { name: /Sign in/i }));
 
     // Wait for and assert that the success message is displayed
-    const successMessage = await screen.findByText(
-      /Logged in as test@example.com/i,
-    );
+    const successMessage = await screen.findByText(/You are signed in/i);
     expect(successMessage).toBeInTheDocument();
   });
 
   test("displays an error message on failed login", async () => {
     // Configure the mock to return an error
-    vi.mocked(await import("@/services/api")).signInUser.mockResolvedValue({
-      data: null,
-      error: { message: "Invalid login credentials" },
-    });
+    const failedResponse: AuthTokenResponsePassword = {
+      data: { user: null, session: null, weakPassword: null },
+      error: new AuthError(
+        "Invalid login credentials",
+        400,
+        "invalid_login_credentials",
+      ),
+    };
 
-    render(<LoginUser />);
+    const { signInUser } = await import("@/services/api");
+    vi.mocked(signInUser).mockResolvedValue(failedResponse);
+
+    render(
+      <MemoryRouter>
+        <LoginUser />
+      </MemoryRouter>,
+    );
 
     // Simulate user input
     fireEvent.change(screen.getByLabelText(/Email/i), {
@@ -58,7 +93,7 @@ describe("LoginUser Component", () => {
     });
 
     // Simulate form submission
-    fireEvent.click(screen.getByRole("button", { name: /Log in/i }));
+    fireEvent.click(screen.getByRole("button", { name: /Sign in/i }));
 
     // Wait for and assert that the error message is displayed
     const errorMessage = await screen.findByText(
