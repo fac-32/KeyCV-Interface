@@ -42,21 +42,21 @@ export type Database = {
       cvs: {
         Row: {
           created_at: string
-          cv_id: number
+          cv_id: string
           cv_storage_id: string | null
           name: string | null
           user_id: string
         }
         Insert: {
           created_at?: string
-          cv_id?: number
+          cv_id?: string
           cv_storage_id?: string | null
           name?: string | null
           user_id: string
         }
         Update: {
           created_at?: string
-          cv_id?: number
+          cv_id?: string
           cv_storage_id?: string | null
           name?: string | null
           user_id?: string
@@ -74,26 +74,26 @@ export type Database = {
       jobs: {
         Row: {
           created_at: string
-          cv_id: number | null
+          cv_id: string
           gen_feedback: string | null
           job_description: string | null
-          job_id: number
+          job_id: string
           user_id: string
         }
         Insert: {
           created_at?: string
-          cv_id?: number | null
+          cv_id: string
           gen_feedback?: string | null
           job_description?: string | null
-          job_id?: number
+          job_id?: string
           user_id: string
         }
         Update: {
           created_at?: string
-          cv_id?: number | null
+          cv_id?: string
           gen_feedback?: string | null
           job_description?: string | null
-          job_id?: number
+          job_id?: string
           user_id?: string
         }
         Relationships: [

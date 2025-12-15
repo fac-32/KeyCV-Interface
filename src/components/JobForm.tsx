@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-
+import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { buildApiUrl } from "@/lib/api";
@@ -56,6 +56,7 @@ export default function JobForm() {
 
   const [cvName, setCvName] = useState<string | null>(null);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
+  const [isSignedIn, setIsSignedIn] = useState<boolean>(false);
 
   const API_ENDPOINT = buildApiUrl("api/ai/analyze-resume");
 
@@ -104,9 +105,6 @@ export default function JobForm() {
         throw new Error(message);
       }
 
-      console.log(data);
-      console.log(data.feedback);
-      console.log(data.feedback.matchScore);
       const parsed: AnalyzeResumeResponse = {
         matchScore: Number(data?.feedback.matchScore) || 0,
         presentKeywords: Array.isArray(data?.feedback.presentKeywords)
@@ -130,14 +128,20 @@ export default function JobForm() {
       setAnalysisResult(parsed);
       resetFormState();
       
-      // store response
+      // store response for saving to supabase
       setAnalysis({
         resume: data.resumeText,
         jobDescription: data.jobDescription,
         feedback: data.feedback,
       });
 
-      // TO DO: display response ///////////////////////////////////////////////
+      // check if user is signed in to display save form if they are
+      const { data: { user } } = await supabase.auth.getUser();    
+      if ( !user ) {
+        setIsSignedIn(false);
+      } else {
+        setIsSignedIn(true);
+      }
 
       setResponseMessage(data?.message || "Submitted successfully.");
       // optionally reset the form
@@ -153,10 +157,11 @@ export default function JobForm() {
 
   const saveSubmitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // const { error } = await supabase.auth.signOut() ////// debugging command
+
+    // const { error } = await supabase.auth.signOut()//////////////////////////
 
     // fetch signed in users
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await supabase.auth.getUser();    
     if ( !user ) {
       return setSaveMessage("Please sign in to save feedback");
     }
@@ -172,7 +177,7 @@ export default function JobForm() {
 
     // fetch cv_id corresponding to cvName
     const { data: fetchCV, error: fetchCVError } = await supabase.from("cvs").select("cv_id").eq("name", cvName);
-    let FK_CV_ID : number;
+    let FK_CV_ID: string;
     
     if ( fetchCVError ) {
       return setSaveMessage("There has been an error fetching your previously saved CV");
@@ -198,6 +203,7 @@ export default function JobForm() {
         return setSaveMessage("There has been an error while saving your CV");
       } 
 
+      // get the cv_id of the newly created/inserted cv
       const { data: newFetchCV, error: newFetchCVError } = await supabase.from("cvs").select("cv_id").eq("name", cvName);
       if ( newFetchCVError ) {
         return setSaveMessage("There has been an error while saving your CV");
@@ -375,16 +381,18 @@ export default function JobForm() {
         </div>
       )}
 
-      <form onSubmit={saveSubmitHandler}>
-        <Input type="text" id="cv-name" value={cvName ?? ""} onChange={(event) => setCvName(event.target.value)} placeholder="cv-fac-dec-2025" required />
-        <Button type="submit">Save</Button>
-        {saveMessage && (
-          <div style={{ marginTop: 12 }}>
-            <p>{saveMessage}</p>
-          </div>
-        )}
-      </form>
-
+      { isSignedIn && (
+        <form onSubmit={saveSubmitHandler}>
+          <Label htmlFor="cv-name">CV name</Label>
+          <Input type="text" id="cv-name" value={cvName ?? ""} onChange={(event) => setCvName(event.target.value)} placeholder="cv-fac-dec-2025" required />
+          <Button type="submit">Save</Button>
+          {saveMessage && (
+            <div style={{ marginTop: 12 }}>
+              <p>{saveMessage}</p>
+            </div>
+          )}
+        </form>
+      )}
     </div>
   );
 }
