@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-
+import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { buildApiUrl } from "@/lib/api";
@@ -14,6 +14,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
+import supabase from "@/lib/supabaseClient";
+// import { analyzeResume } from "@/services/api";
 import "./JobForm.css";
 import "./loader.css";
 
@@ -45,6 +47,16 @@ export default function JobForm() {
   const [submittedJobDescription, setSubmittedJobDescription] = useState<
     string | null
   >(null);
+
+  const [analysis, setAnalysis] = useState<{
+    resume: string;
+    jobDescription: string;
+    feedback: string;
+  } | null>(null);
+
+  const [cvName, setCvName] = useState<string | null>(null);
+  const [saveMessage, setSaveMessage] = useState<string | null>(null);
+  const [isSignedIn, setIsSignedIn] = useState<boolean>(false);
 
   const API_ENDPOINT = buildApiUrl("api/ai/analyze-resume");
 
@@ -94,15 +106,15 @@ export default function JobForm() {
       }
 
       const parsed: AnalyzeResumeResponse = {
-        matchScore: Number(data?.matchScore) || 0,
-        presentKeywords: Array.isArray(data?.presentKeywords)
-          ? data.presentKeywords
+        matchScore: Number(data?.feedback.matchScore) || 0,
+        presentKeywords: Array.isArray(data?.feedback.presentKeywords)
+          ? data.feedback.presentKeywords
           : [],
-        missingKeywords: Array.isArray(data?.missingKeywords)
-          ? data.missingKeywords
+        missingKeywords: Array.isArray(data?.feedback.missingKeywords)
+          ? data.feedback.missingKeywords
           : [],
-        recommendations: Array.isArray(data?.recommendations)
-          ? data.recommendations
+        recommendations: Array.isArray(data?.feedback.recommendations)
+          ? data.feedback.recommendations
           : [],
       };
 
@@ -115,6 +127,27 @@ export default function JobForm() {
       setSubmittedJobDescription(values["job-description"] || "");
       setAnalysisResult(parsed);
       resetFormState();
+
+      // store response for saving to supabase
+      setAnalysis({
+        resume: data.resumeText,
+        jobDescription: data.jobDescription,
+        feedback: data.feedback,
+      });
+
+      // check if user is signed in to display save form if they are
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        setIsSignedIn(false);
+      } else {
+        setIsSignedIn(true);
+      }
+
+      setResponseMessage(data?.message || "Submitted successfully.");
+      // optionally reset the form
+      form.reset();
     } catch (error) {
       setResponseMessage(
         error instanceof Error ? error.message : "Submission failed.",
@@ -123,6 +156,96 @@ export default function JobForm() {
       setIsUploading(false);
     }
   }
+
+  const saveSubmitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    // const { error } = await supabase.auth.signOut()//////////////////////////
+
+    // fetch signed in users
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      return setSaveMessage("Please sign in to save feedback");
+    }
+
+    // check if there is something to save first
+    if (!analysis?.resume || !analysis.jobDescription || !analysis.feedback) {
+      return setSaveMessage(
+        "Unable to save as the feedback, job description, or CV is missing",
+      );
+    }
+
+    if (!cvName) {
+      return setSaveMessage("An existing or new CV name must be provided");
+    }
+
+    // fetch cv_id corresponding to cvName
+    const { data: fetchCV, error: fetchCVError } = await supabase
+      .from("cvs")
+      .select("cv_id")
+      .eq("name", cvName);
+    let FK_CV_ID: string;
+
+    if (fetchCVError) {
+      return setSaveMessage(
+        "There has been an error fetching your previously saved CV",
+      );
+    }
+
+    if (fetchCV.length !== 0) {
+      FK_CV_ID = fetchCV[0].cv_id;
+    } else {
+      // if it does not exist, insert a new cv with cvName and resume in storage
+      const path = `${user.id}/${cvName}.txt`;
+      const blob = new Blob([analysis.resume], { type: "text/plain" });
+      const { data: cvStorageInsert, error: cvStorageError } =
+        await supabase.storage.from("cv_files").upload(path, blob, {
+          contentType: "text/plain",
+        });
+
+      if (cvStorageError) {
+        return setSaveMessage("Upload error -  make sure you are signed in");
+      }
+
+      // link storage file to public cv relation
+      const { error: insertCVError } = await supabase.from("cvs").insert({
+        user_id: user.id,
+        name: cvName,
+        cv_storage_id: cvStorageInsert?.id,
+      });
+      if (insertCVError) {
+        return setSaveMessage("There has been an error while saving your CV");
+      }
+
+      // get the cv_id of the newly created/inserted cv
+      const { data: newFetchCV, error: newFetchCVError } = await supabase
+        .from("cvs")
+        .select("cv_id")
+        .eq("name", cvName);
+      if (newFetchCVError) {
+        return setSaveMessage("There has been an error while saving your CV");
+      }
+
+      FK_CV_ID = newFetchCV[0].cv_id;
+    }
+
+    // then insert a new job/feedback for the user
+    const { error: insertJobError } = await supabase.from("jobs").insert({
+      user_id: user.id,
+      job_description: analysis.jobDescription,
+      gen_feedback: analysis.feedback,
+      cv_id: FK_CV_ID,
+    });
+    if (insertJobError) {
+      return setSaveMessage(
+        "There has been an error while saving your feedbck",
+      );
+    }
+
+    setSaveMessage("CV saved successfully");
+  };
 
   return (
     <div className="job-form__shell">
@@ -282,6 +405,26 @@ export default function JobForm() {
             </section>
           </div>
         </div>
+      )}
+
+      {isSignedIn && (
+        <form onSubmit={saveSubmitHandler}>
+          <Label htmlFor="cv-name">CV name</Label>
+          <Input
+            type="text"
+            id="cv-name"
+            value={cvName ?? ""}
+            onChange={(event) => setCvName(event.target.value)}
+            placeholder="cv-fac-dec-2025"
+            required
+          />
+          <Button type="submit">Save</Button>
+          {saveMessage && (
+            <div style={{ marginTop: 12 }}>
+              <p>{saveMessage}</p>
+            </div>
+          )}
+        </form>
       )}
     </div>
   );
