@@ -210,13 +210,11 @@ export default function JobForm() {
       }
 
       // link storage file to public cv relation
-      const { error: insertCVError } = await supabase
-        .from("cvs")
-        .insert({
-          user_id: user.id,
-          name: cvName,
-          cv_storage_id: cvStorageInsert?.id,
-        });
+      const { error: insertCVError } = await supabase.from("cvs").insert({
+        user_id: user.id,
+        name: cvName,
+        cv_storage_id: cvStorageInsert?.id,
+      });
       if (insertCVError) {
         return setSaveMessage("There has been an error while saving your CV");
       }
@@ -234,14 +232,12 @@ export default function JobForm() {
     }
 
     // then insert a new job/feedback for the user
-    const { error: insertJobError } = await supabase
-      .from("jobs")
-      .insert({
-        user_id: user.id,
-        job_description: analysis.jobDescription,
-        gen_feedback: analysis.feedback,
-        cv_id: FK_CV_ID,
-      });
+    const { error: insertJobError } = await supabase.from("jobs").insert({
+      user_id: user.id,
+      job_description: analysis.jobDescription,
+      gen_feedback: analysis.feedback,
+      cv_id: FK_CV_ID,
+    });
     if (insertJobError) {
       return setSaveMessage(
         "There has been an error while saving your feedbck",
