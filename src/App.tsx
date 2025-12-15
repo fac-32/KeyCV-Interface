@@ -6,6 +6,7 @@ import "./App.css";
 import CreateUser from "./components/Create-User";
 import LoginUser from "./components/Login-User";
 import JobForm from "./components/JobForm";
+import Feedback from "./components/FeedbackGallery";
 import { Button } from "./components/ui/button";
 
 type Theme = "light" | "dark";
@@ -71,9 +72,11 @@ function App() {
         </div>
       </nav>
       <main className="app-main">
+        <Link to="/feedback">Feedback</Link>
         <Routes>
           <Route path="/create-user" element={<CreateUser />} />
           <Route path="/login-user" element={<LoginUser />} />
+          <Route path="/feedback" element={<Feedback />} />
           <Route path="/" element={<JobForm />} />
         </Routes>
       </main>
