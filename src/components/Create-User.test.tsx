@@ -3,6 +3,7 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, test, expect, vi, beforeEach } from "vitest";
 import type { AuthError, PostgrestError, User } from "@supabase/supabase-js";
+import { MemoryRouter } from "react-router-dom";
 import CreateUser from "./Create-User";
 
 // Mock the API service module
@@ -18,9 +19,16 @@ describe("CreateUser Component", () => {
     vi.clearAllMocks();
   });
 
+  const renderWithRouter = () =>
+    render(
+      <MemoryRouter>
+        <CreateUser />
+      </MemoryRouter>,
+    );
+
   test("displays error message if email or password fields are empty", async () => {
     const { signUpUser } = await import("@/services/api");
-    render(<CreateUser />);
+    renderWithRouter();
 
     // Simulate form submission directly to bypass browser's native validation
     fireEvent.submit(screen.getByRole("form"));
@@ -34,7 +42,7 @@ describe("CreateUser Component", () => {
 
   test("displays error message if password is less than 8 characters", async () => {
     const { signUpUser } = await import("@/services/api");
-    render(<CreateUser />);
+    renderWithRouter();
 
     fireEvent.change(screen.getByLabelText(/Email/i), {
       target: { value: "test@example.com" },
@@ -43,7 +51,7 @@ describe("CreateUser Component", () => {
       target: { value: "short" },
     });
 
-    fireEvent.click(screen.getByRole("button", { name: /Create/i }));
+    fireEvent.click(screen.getByRole("button", { name: /Sign Up/i }));
 
     const errorMessage = await screen.findByText(
       /password must be at least 8 characters long/i,
@@ -86,7 +94,7 @@ describe("CreateUser Component", () => {
       statusText: "Created",
     });
 
-    render(<CreateUser />);
+    renderWithRouter();
 
     fireEvent.change(screen.getByLabelText(/Email/i), {
       target: { value: "newuser@example.com" },
@@ -95,7 +103,7 @@ describe("CreateUser Component", () => {
       target: { value: "longenoughpassword" },
     });
 
-    fireEvent.click(screen.getByRole("button", { name: /Create/i }));
+    fireEvent.click(screen.getByRole("button", { name: /Sign Up/i }));
 
     await waitFor(() => {
       expect(api.signUpUser).toHaveBeenCalledWith(
@@ -130,7 +138,7 @@ describe("CreateUser Component", () => {
       } as AuthError,
     });
 
-    render(<CreateUser />);
+    renderWithRouter();
 
     fireEvent.change(screen.getByLabelText(/Email/i), {
       target: { value: "existing@example.com" },
@@ -139,7 +147,7 @@ describe("CreateUser Component", () => {
       target: { value: "password123" },
     });
 
-    fireEvent.click(screen.getByRole("button", { name: /Create/i }));
+    fireEvent.click(screen.getByRole("button", { name: /Sign Up/i }));
 
     const errorMessage = await screen.findByText(
       /This email is already in use/i,
@@ -159,7 +167,7 @@ describe("CreateUser Component", () => {
       } as AuthError,
     });
 
-    render(<CreateUser />);
+    renderWithRouter();
 
     fireEvent.change(screen.getByLabelText(/Email/i), {
       target: { value: "any@example.com" },
@@ -168,7 +176,7 @@ describe("CreateUser Component", () => {
       target: { value: "password123" },
     });
 
-    fireEvent.click(screen.getByRole("button", { name: /Create/i }));
+    fireEvent.click(screen.getByRole("button", { name: /Sign Up/i }));
 
     const errorMessage = await screen.findByText(
       /An error has occured while creating your account/i,
@@ -214,7 +222,7 @@ describe("CreateUser Component", () => {
       statusText: "Conflict",
     });
 
-    render(<CreateUser />);
+    renderWithRouter();
 
     fireEvent.change(screen.getByLabelText(/Email/i), {
       target: { value: "duplicate@example.com" },
@@ -223,7 +231,7 @@ describe("CreateUser Component", () => {
       target: { value: "password123" },
     });
 
-    fireEvent.click(screen.getByRole("button", { name: /Create/i }));
+    fireEvent.click(screen.getByRole("button", { name: /Sign Up/i }));
 
     const errorMessage = await screen.findByText(
       /This email is already in use/i,

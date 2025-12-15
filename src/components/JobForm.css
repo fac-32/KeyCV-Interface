@@ -1,16 +1,96 @@
 .job-form__shell {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
   padding: clamp(1.5rem, 3vw, 2.75rem);
+  position: relative;
+  color: var(--foreground);
 }
 
 .job-form__card {
   width: min(720px, 100%);
   padding: clamp(1.5rem, 2.5vw, 2.5rem);
   border-radius: 18px;
-  border: 1px solid var(--border);
+  border: 1px dashed var(--border);
   box-shadow: 0 14px 40px rgba(0, 0, 0, 0.06);
   background: var(--card);
+  transition:
+    background-color 200ms ease,
+    color 200ms ease,
+    border-color 200ms ease;
+}
+
+.result-card {
+  width: 100%;
+  padding: clamp(1.5rem, 2.5vw, 2.5rem);
+  border-radius: 18px;
+  border: 1px dashed var(--border);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.06);
+  background: var(--card);
+  color: var(--foreground);
+  transition:
+    background-color 200ms ease,
+    color 200ms ease,
+    border-color 200ms ease;
+}
+
+.result-grid {
+  display: grid;
+  width: 100%;
+  max-width: 1400px;
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  gap: 1rem;
+}
+
+.result-summary {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 1.1rem 1.6rem;
+}
+
+.result-summary__label {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.result-summary__value {
+  font-size: 2.8rem;
+  font-weight: 800;
+}
+
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(3px);
+  z-index: 999;
+}
+
+.loader--large {
+  width: 120px;
+  height: 60px;
+  background: var(--foreground);
+}
+
+.loader--large::before,
+.loader--large::after {
+  background: var(--foreground);
+}
+
+.loading-overlay__text {
+  color: var(--foreground);
+  font-size: 1.1rem;
+  font-weight: 600;
 }
 
 .job-form {
@@ -27,7 +107,7 @@
 
 .job-form__actions {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   margin-top: 0.5rem;
 }
 
@@ -35,6 +115,109 @@
   padding: 0.75rem 0.9rem;
   border-radius: 12px;
   border: 1px solid var(--border);
+}
+
+.result-analysis {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.result-analysis__header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.result-analysis__score-label {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.result-analysis__score-value {
+  font-size: 1.9rem;
+  font-weight: 700;
+}
+
+.result-analysis__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0.75rem;
+}
+
+.result-panel {
+  padding: 0.85rem;
+  border-radius: 12px;
+  border: 1px dashed var(--border);
+  background: color-mix(in srgb, var(--card) 88%, transparent);
+  transition:
+    background-color 200ms ease,
+    color 200ms ease,
+    border-color 200ms ease;
+}
+
+.result-panel h4 {
+  margin: 0 0 0.4rem;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.result-panel ul {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding-left: 1rem;
+}
+
+.result-panel li {
+  list-style: none;
+  font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+}
+
+.result-panel--full {
+  grid-column: 1 / -1;
+}
+
+.result-muted {
+  color: var(--muted-foreground);
+}
+
+.result-section__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.35rem;
+}
+
+.result-section__label {
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}
+
+.result-jobdesc {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.result-jobdesc__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.result-jobdesc__text {
+  white-space: pre-wrap;
+  border-radius: 12px;
+  border: 1px dashed var(--border);
+  padding: 0.8rem 0.9rem;
+  background: color-mix(in srgb, var(--card) 92%, transparent);
+  transition:
+    background-color 200ms ease,
+    color 200ms ease,
+    border-color 200ms ease;
 }
 
 @media (max-width: 640px) {
@@ -45,5 +228,30 @@
 
   .job-form__actions {
     justify-content: center;
+  }
+}
+
+@media (max-width: 1200px) {
+  .result-grid {
+    max-width: 100%;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 0.85rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .job-form__card,
+  .result-card {
+    width: 100%;
+    padding: 1.1rem;
+  }
+
+  .result-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .result-summary {
+    width: 100%;
   }
 }

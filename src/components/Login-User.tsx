@@ -3,6 +3,9 @@ import { signInUser } from "@/services/api";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Link } from "react-router-dom";
+import "./JobForm.css";
+import "./Auth.css";
 
 const LoginUser = () => {
   const [email, setEmail] = useState<string>("");
@@ -26,38 +29,58 @@ const LoginUser = () => {
         setMessage("Something has gone wrong while trying to log you in");
       }
     } else if (data) {
-      setMessage(`Logged in as ${data.user.email}`);
+      setMessage(`You are signed in`);
     }
   };
 
   return (
-    <section>
-      <form
-        className="grid w-full max-w-sm items-center gap-3"
-        onSubmit={submitHandler}
-      >
-        <p>Log into existing account</p>
+    <section className="job-form__shell">
+      <div className="job-form__card">
+        <form className="job-form" onSubmit={submitHandler}>
+          <h2>Sign in to your account</h2>
 
-        <Label htmlFor="login-email">Email</Label>
-        <Input
-          type="email"
-          id="login-email"
-          onChange={(event) => setEmail(event.target.value)}
-          placeholder="example@email.com"
-          required
-        />
+          <div className="job-form__field">
+            <Label htmlFor="login-email">Email</Label>
+            <Input
+              type="email"
+              id="login-email"
+              name="email"
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder="example@email.com"
+              autoComplete="email"
+              required
+            />
+          </div>
 
-        <Label htmlFor="login-password">Password</Label>
-        <Input
-          type="password"
-          id="login-password"
-          onChange={(event) => setPassword(event.target.value)}
-          required
-        />
+          <div className="job-form__field">
+            <Label htmlFor="login-password">Password</Label>
+            <Input
+              type="password"
+              id="login-password"
+              name="current-password"
+              onChange={(event) => setPassword(event.target.value)}
+              autoComplete="current-password"
+              required
+            />
+          </div>
 
-        <Button type="submit">Log in</Button>
-      </form>
-      <p>{message}</p>
+          {message && (
+            <div>
+              <p>{message}</p>
+            </div>
+          )}
+
+          <div className="job-form__actions">
+            <Button type="submit">Sign in</Button>
+          </div>
+
+          <div className="auth-footer">
+            <Link to="/create-user" className="text-small">
+              Create a new account
+            </Link>
+          </div>
+        </form>
+      </div>
     </section>
   );
 };
