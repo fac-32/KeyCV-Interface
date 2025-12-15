@@ -47,7 +47,7 @@ function App() {
         </div>
         <div className="app-nav__center"> We highlight what matters</div>
         <div className="app-nav__actions">
-          <Link to="/create-user">Join to us</Link>
+          <Link to="/create-user">Join Us</Link>
           <span className="app-nav__divider" aria-hidden="true">
             |
           </span>
