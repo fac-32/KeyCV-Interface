@@ -1,7 +1,6 @@
-/* eslint-disable linebreak-style */
-
 import supabase from "@/lib/supabaseClient";
 import { useState, useEffect } from "react";
+import ResultCard from "./ResultCard";
 
 type FeedbackElement = {
     job_description: string | null;
@@ -15,7 +14,7 @@ type FeedbackElement = {
 
 export default function Feedback() {
     const [message, setMessage] = useState<string | null>(null);
-    const [feedback, setFeedback] = useState<FeedbackElement[]>([]);
+    const [allFeedback, setAllFeedback] = useState<FeedbackElement[]>([]);
 
     useEffect(() => {
         async function fetchFeedback() {
@@ -24,25 +23,24 @@ export default function Feedback() {
                 return setMessage("You must log in to view saved feedback");
             }
 
-            const { data: allFeedback, error: feedbackError } = await supabase.from("jobs").select("job_description, gen_feedback");
+            const { data: feedback, error: feedbackError } = await supabase.from("jobs").select("job_description, gen_feedback");
             if ( feedbackError ) {
                 return setMessage("There has been an error while retrieving feedback records");
             }
 
-            const parsed = allFeedback.map(feedback => ({job_description: feedback.job_description, gen_feedback: JSON.parse(feedback.gen_feedback ?? ""),}));
-            setFeedback(parsed);
-
-            console.log(feedback);
-
-            // let feed = JSON.parse(feedback[1].gen_feedback);
-            // console.log(feed);
-            // console.log(feedback[1].job_description);
+            const parsed = feedback.map(f => ({job_description: f.job_description, gen_feedback: JSON.parse(f.gen_feedback ?? ""),}));
+            setAllFeedback(parsed);
         }
         fetchFeedback();
     }, []);
     
 
     return (
-        <></>
+        <>
+            {message && <p>{message}</p>}
+            {allFeedback.length > 0 && 
+                <ul>{allFeedback.map(f => <li><ResultCard jobDescription={f.job_description} feedback={f.gen_feedback}/></li>)}</ul>
+            }
+        </>
     );
 }
