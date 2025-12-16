@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { buildApiUrl } from "@/lib/api";
 import {
   Form,
@@ -172,7 +173,6 @@ export default function JobForm() {
     }
 
     // check if there is something to save first
-    console.log(analysis);
     if (!analysis?.resume || !analysis.jobDescription || !analysis.feedback || !analysis.cvName) {
       return setSaveMessage(
         "Unable to save as the feedback, job description, or CV is missing",
@@ -409,9 +409,10 @@ export default function JobForm() {
       {isSignedIn && (
         <form className="cv-save" onSubmit={saveSubmitHandler}>
           <div className="cv-save__field">
+            {/* <Label htmlFor="application-name">Application name</Label> please style my label*/} 
             <Input
               type="text"
-              id="cv-name"
+              id="application-name"
               value={applicationName ?? ""}
               onChange={(event) => setApplicationName(event.target.value)}
               placeholder="Application name"
@@ -421,7 +422,9 @@ export default function JobForm() {
           <div className="cv-save__actions">
             <Button type="submit">Save</Button>
           </div>
-          {saveMessage && <p className="cv-save__message">{saveMessage}</p>}
+          <div>
+            {saveMessage && <p className="cv-save__message">{saveMessage}</p>}
+          </div>
         </form>
       )}
     </div>
