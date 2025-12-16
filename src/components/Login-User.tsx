@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Link } from "react-router-dom";
 import "./JobForm.css";
-import "./Auth.css";
 
 const LoginUser = () => {
   const [email, setEmail] = useState<string>("");
@@ -65,8 +64,8 @@ const LoginUser = () => {
           </div>
 
           {message && (
-            <div>
-              <p>{message}</p>
+            <div className="job-form__message">
+              <div>{message}</div>
             </div>
           )}
 
