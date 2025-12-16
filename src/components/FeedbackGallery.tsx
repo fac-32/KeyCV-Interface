@@ -61,7 +61,9 @@ export default function Feedback() {
               key={`feedback-${index}`}
               value={`feedback-${index}`}
             >
-              <AccordionTrigger>{item.job_name}</AccordionTrigger>
+              <AccordionTrigger>
+                {item.job_name} | {item.gen_feedback?.matchScore}
+              </AccordionTrigger>
               <AccordionContent>
                 <ResultCard
                   jobDescription={item.job_description}

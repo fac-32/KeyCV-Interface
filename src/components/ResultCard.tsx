@@ -32,7 +32,10 @@ export default function ResultCard({
       <div className="result-card">
         <section className="result-analysis" aria-label="AI analysis result">
           <div className="result-analysis__header">
-            <p className="result-section__label">AI insights</p>
+            <div className="result-section__label">AI insights</div>
+            <div className="result-section__label">
+              Match Score {feedback?.matchScore}
+            </div>
           </div>
 
           <div className="result-analysis__grid">
