@@ -54,20 +54,26 @@ export default function Feedback() {
   return (
     <>
       {message && <p>{message}</p>}
-      {allFeedback.length > 0 ? 
-      <Accordion type="single" className="w-full" collapsible>
-        {allFeedback.map((item, index) => (
-          <AccordionItem key={`feedback-${index}`} value={`feedback-${index}`}>
-            <AccordionTrigger>{item.job_name}</AccordionTrigger>
-            <AccordionContent>
-              <ResultCard
-                jobDescription={item.job_description}
-                feedback={item.gen_feedback}
-              />
-            </AccordionContent>
-          </AccordionItem>
-        ))}
-      </Accordion> : <p>You don't have any saved feedback yet...</p>}
+      {allFeedback.length > 0 ? (
+        <Accordion type="single" className="w-full" collapsible>
+          {allFeedback.map((item, index) => (
+            <AccordionItem
+              key={`feedback-${index}`}
+              value={`feedback-${index}`}
+            >
+              <AccordionTrigger>{item.job_name}</AccordionTrigger>
+              <AccordionContent>
+                <ResultCard
+                  jobDescription={item.job_description}
+                  feedback={item.gen_feedback}
+                />
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      ) : (
+        <p>You don't have any saved feedback yet...</p>
+      )}
     </>
   );
 }
