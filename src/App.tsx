@@ -26,6 +26,7 @@ function getStoredTheme(): Theme {
 function App() {
   const [theme, setTheme] = useState<Theme>(() => getStoredTheme());
   const [isSignedIn, setIsSignedIn] = useState<boolean>(false);
+  const [email, setEmail] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -44,6 +45,7 @@ function App() {
         data: { user },
       } = await supabase.auth.getUser();
       setIsSignedIn(!!user);
+      setEmail(user?.email);
     }
 
     const {
@@ -75,7 +77,10 @@ function App() {
         <div className="app-nav__center"> We highlight what matters</div>
         <div className="app-nav__actions">
           {isSignedIn ? (
-            <Link to="/feedback">Feedback</Link>
+            <><span className="app-nav__divider" aria-hidden="true">{email} | </span>
+              <Link to="/feedback">Feedback</Link>
+            </>
+            
           ) : (
             <Link to="/create-user">Join Us</Link>
           )}
