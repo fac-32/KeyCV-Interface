@@ -6,7 +6,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion"
+} from "@/components/ui/accordion";
 
 type FeedbackElement = {
   job_description: string | null;
@@ -59,9 +59,12 @@ export default function Feedback() {
           <AccordionItem value={`feedback-${index}`}>
             <AccordionTrigger>{item.job_name}</AccordionTrigger>
             <AccordionContent>
-              <ResultCard jobDescription={item.job_description} feedback={item.gen_feedback}/>
+              <ResultCard
+                jobDescription={item.job_description}
+                feedback={item.gen_feedback}
+              />
             </AccordionContent>
-          </AccordionItem>            
+          </AccordionItem>
         ))}
       </Accordion>
 

@@ -9,7 +9,6 @@ import JobForm from "./components/JobForm";
 import Feedback from "./components/FeedbackGallery";
 import { Button } from "./components/ui/button";
 
-
 type Theme = "light" | "dark";
 
 const THEME_KEY = "keycv-theme";

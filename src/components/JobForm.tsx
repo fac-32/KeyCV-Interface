@@ -173,7 +173,12 @@ export default function JobForm() {
     }
 
     // check if there is something to save first
-    if (!analysis?.resume || !analysis.jobDescription || !analysis.feedback || !analysis.cvName) {
+    if (
+      !analysis?.resume ||
+      !analysis.jobDescription ||
+      !analysis.feedback ||
+      !analysis.cvName
+    ) {
       return setSaveMessage(
         "Unable to save as the feedback, job description, or CV is missing",
       );
@@ -409,7 +414,7 @@ export default function JobForm() {
       {isSignedIn && (
         <form className="cv-save" onSubmit={saveSubmitHandler}>
           <div className="cv-save__field">
-            {/* <Label htmlFor="application-name">Application name</Label> please style my label*/} 
+            {/* <Label htmlFor="application-name">Application name</Label> please style my label*/}
             <Input
               type="text"
               id="application-name"
