@@ -54,9 +54,10 @@ export default function Feedback() {
   return (
     <>
       {message && <p>{message}</p>}
+      {allFeedback.length > 0 ? 
       <Accordion type="single" className="w-full" collapsible>
         {allFeedback.map((item, index) => (
-          <AccordionItem value={`feedback-${index}`}>
+          <AccordionItem key={`feedback-${index}`} value={`feedback-${index}`}>
             <AccordionTrigger>{item.job_name}</AccordionTrigger>
             <AccordionContent>
               <ResultCard
@@ -66,29 +67,7 @@ export default function Feedback() {
             </AccordionContent>
           </AccordionItem>
         ))}
-      </Accordion>
-
-      {/* {allFeedback.length > 0 && (
-        <ul>
-          {allFeedback.map((item, index) => (
-            <li key={index}>{item.job_name}
-              <ResultCard
-                jobDescription={item.job_description}
-                feedback={item.gen_feedback}
-              />
-            </li>
-          ))}
-
-          <Accordion type="single" collapsible>
-            <AccordionItem value="item-1">
-              <AccordionTrigger>Is it accessible?</AccordionTrigger>
-              <AccordionContent>
-                Yes. It adheres to the WAI-ARIA design pattern.
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-        </ul>
-      )} */}
+      </Accordion> : <p>You don't have any saved feedback yet...</p>}
     </>
   );
 }
