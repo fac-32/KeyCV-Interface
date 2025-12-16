@@ -78,6 +78,7 @@ export type Database = {
           gen_feedback: string | null;
           job_description: string | null;
           job_id: string;
+          name: string | null;
           user_id: string;
         };
         Insert: {
@@ -86,6 +87,7 @@ export type Database = {
           gen_feedback?: string | null;
           job_description?: string | null;
           job_id?: string;
+          name?: string | null;
           user_id: string;
         };
         Update: {
@@ -94,6 +96,7 @@ export type Database = {
           gen_feedback?: string | null;
           job_description?: string | null;
           job_id?: string;
+          name?: string | null;
           user_id?: string;
         };
         Relationships: [
