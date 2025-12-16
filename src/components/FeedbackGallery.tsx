@@ -57,7 +57,9 @@ export default function Feedback() {
       <Accordion type="single" className="w-full" collapsible>
         {allFeedback.map((item, index) => (
           <AccordionItem value={`feedback-${index}`}>
-            <AccordionTrigger>{item.job_name}</AccordionTrigger>
+            <AccordionTrigger>
+              {item.job_name} | {item.gen_feedback?.matchScore}
+            </AccordionTrigger>
             <AccordionContent>
               <ResultCard
                 jobDescription={item.job_description}
