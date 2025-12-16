@@ -77,7 +77,7 @@ function App() {
           {isSignedIn ? (
             <Link to="/feedback">Past feedback</Link>
           ) : (
-            <Link to="/create-user">Join to us</Link>
+            <Link to="/create-user">Join Us</Link>
           )}
           <span className="app-nav__divider" aria-hidden="true">
             |
