@@ -27,7 +27,7 @@ export default function Feedback() {
 
       const { data: feedback, error: feedbackError } = await supabase
         .from("jobs")
-        .select("job_description, gen_feedback");
+        .select("job_description, gen_feedback, name");
       if (feedbackError) {
         return setMessage(
           "There has been an error while retrieving feedback records",

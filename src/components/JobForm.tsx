@@ -235,6 +235,7 @@ export default function JobForm() {
       job_description: analysis.jobDescription,
       gen_feedback: analysis.feedback,
       cv_id: FK_CV_ID,
+      name: applicationName,
     });
     if (insertJobError) {
       return setSaveMessage(
