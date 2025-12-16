@@ -75,7 +75,7 @@ function App() {
         <div className="app-nav__center"> We highlight what matters</div>
         <div className="app-nav__actions">
           {isSignedIn ? (
-            <Link to="/feedback">Past feedback</Link>
+            <Link to="/feedback">Feedback</Link>
           ) : (
             <Link to="/create-user">Join Us</Link>
           )}
