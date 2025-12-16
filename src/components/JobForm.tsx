@@ -51,9 +51,10 @@ export default function JobForm() {
     resume: string;
     jobDescription: string;
     feedback: string;
+    cvName: string;
   } | null>(null);
 
-  const [cvName, setCvName] = useState<string | null>(null);
+  const [applicationName, setApplicationName] = useState<string | null>(null);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [isSignedIn, setIsSignedIn] = useState<boolean>(false);
 
@@ -132,6 +133,7 @@ export default function JobForm() {
         resume: data.resumeText,
         jobDescription: data.jobDescription,
         feedback: data.feedback,
+        cvName: data.cvName,
       });
 
       // check if user is signed in to display save form if they are
@@ -170,21 +172,18 @@ export default function JobForm() {
     }
 
     // check if there is something to save first
-    if (!analysis?.resume || !analysis.jobDescription || !analysis.feedback) {
+    console.log(analysis);
+    if (!analysis?.resume || !analysis.jobDescription || !analysis.feedback || !analysis.cvName) {
       return setSaveMessage(
         "Unable to save as the feedback, job description, or CV is missing",
       );
-    }
-
-    if (!cvName) {
-      return setSaveMessage("An existing or new CV name must be provided");
     }
 
     // fetch cv_id corresponding to cvName
     const { data: fetchCV, error: fetchCVError } = await supabase
       .from("cvs")
       .select("cv_id")
-      .eq("name", cvName);
+      .eq("name", analysis.cvName);
     let FK_CV_ID: string;
 
     if (fetchCVError) {
@@ -197,7 +196,7 @@ export default function JobForm() {
       FK_CV_ID = fetchCV[0].cv_id;
     } else {
       // if it does not exist, insert a new cv with cvName and resume in storage
-      const path = `${user.id}/${cvName}.txt`;
+      const path = `${user.id}/${analysis.cvName}.txt`;
       const blob = new Blob([analysis.resume], { type: "text/plain" });
       const { data: cvStorageInsert, error: cvStorageError } =
         await supabase.storage.from("cv_files").upload(path, blob, {
@@ -211,7 +210,7 @@ export default function JobForm() {
       // link storage file to public cv relation
       const { error: insertCVError } = await supabase.from("cvs").insert({
         user_id: user.id,
-        name: cvName,
+        name: analysis.cvName,
         cv_storage_id: cvStorageInsert?.id,
       });
       if (insertCVError) {
@@ -222,7 +221,7 @@ export default function JobForm() {
       const { data: newFetchCV, error: newFetchCVError } = await supabase
         .from("cvs")
         .select("cv_id")
-        .eq("name", cvName);
+        .eq("name", analysis.cvName);
       if (newFetchCVError) {
         return setSaveMessage("There has been an error while saving your CV");
       }
@@ -412,8 +411,8 @@ export default function JobForm() {
             <Input
               type="text"
               id="cv-name"
-              value={cvName ?? ""}
-              onChange={(event) => setCvName(event.target.value)}
+              value={applicationName ?? ""}
+              onChange={(event) => setApplicationName(event.target.value)}
               placeholder="Application name"
               required
             />
