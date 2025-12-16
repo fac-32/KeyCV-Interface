@@ -9,7 +9,7 @@
 }
 
 .job-form__card {
-  width: min(720px, 100%);
+  min-width: 700px;
   padding: clamp(1.5rem, 2.5vw, 2.5rem);
   border-radius: 18px;
   border: 1px dashed var(--border);
@@ -19,6 +19,18 @@
     background-color 200ms ease,
     color 200ms ease,
     border-color 200ms ease;
+}
+
+.text-small {
+  font-size: small;
+  display: flex;
+  justify-content: center;
+}
+
+.auth-footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.25rem;
 }
 
 .result-card {
@@ -95,6 +107,7 @@
 
 .job-form {
   display: flex;
+  justify-content: center;
   flex-direction: column;
   gap: 1rem;
 }
@@ -113,8 +126,40 @@
 
 .job-form__message {
   padding: 0.75rem 0.9rem;
-  border-radius: 12px;
-  border: 1px solid var(--border);
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.cv-save {
+  margin: 1.75rem auto 0;
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: row;
+  gap: 0.7rem;
+  align-items: center;
+}
+
+.cv-save__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.cv-save__actions {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.cv-save__message {
+  margin: 0;
+  color: var(--foreground);
+  font-size: 0.95rem;
 }
 
 .result-analysis {
