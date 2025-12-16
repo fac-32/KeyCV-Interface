@@ -71,14 +71,16 @@ function App() {
   return (
     <div className="app-shell">
       <nav className="app-nav">
-
         <div className="app-nav__brand">
-            <Link to="/">KeyCV</Link>
-          </div>
+          <Link to="/">KeyCV</Link>
+        </div>
         <div className="app-nav__center"> We highlight what matters</div>
         <div className="app-nav__actions">
           {isSignedIn ? (
-            <><span className="app-nav__divider" aria-hidden="true">{email} | </span>
+            <>
+              <span className="app-nav__divider" aria-hidden="true">
+                {email} |{" "}
+              </span>
               <Link to="/feedback">Feedback</Link>
             </>
           ) : (
