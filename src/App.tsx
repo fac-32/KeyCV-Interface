@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import { Moon, Sun } from "lucide-react";
-
+import supabase from "@/lib/supabaseClient";
 import "./App.css";
 import CreateUser from "./components/Create-User";
 import LoginUser from "./components/Login-User";
 import JobForm from "./components/JobForm";
+import Feedback from "./components/FeedbackGallery";
 import { Button } from "./components/ui/button";
 
 type Theme = "light" | "dark";
@@ -24,6 +25,7 @@ function getStoredTheme(): Theme {
 
 function App() {
   const [theme, setTheme] = useState<Theme>(() => getStoredTheme());
+  const [isSignedIn, setIsSignedIn] = useState<boolean>(false);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -36,6 +38,31 @@ function App() {
     }
   }, [theme]);
 
+  useEffect(() => {
+    async function getSignedStatus() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setIsSignedIn(!!user);
+    }
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsSignedIn(!!session?.user);
+    });
+
+    getSignedStatus();
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  const handleLogOut = async () => {
+    await supabase.auth.signOut();
+  };
+
   const toggleTheme = () =>
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
 
@@ -47,11 +74,21 @@ function App() {
         </div>
         <div className="app-nav__center"> We highlight what matters</div>
         <div className="app-nav__actions">
-          <Link to="/create-user">Join to us</Link>
+          {isSignedIn ? (
+            <Link to="/feedback">Past feedback</Link>
+          ) : (
+            <Link to="/create-user">Join Us</Link>
+          )}
           <span className="app-nav__divider" aria-hidden="true">
             |
           </span>
-          <Link to="/login-user">Sign In</Link>
+          {isSignedIn ? (
+            <Link to="/" onClick={handleLogOut}>
+              Log out
+            </Link>
+          ) : (
+            <Link to="/login-user">Sign In</Link>
+          )}
           <Button
             aria-label="Toggle theme"
             variant="ghost"
@@ -74,6 +111,7 @@ function App() {
         <Routes>
           <Route path="/create-user" element={<CreateUser />} />
           <Route path="/login-user" element={<LoginUser />} />
+          <Route path="/feedback" element={<Feedback />} />
           <Route path="/" element={<JobForm />} />
         </Routes>
       </main>
