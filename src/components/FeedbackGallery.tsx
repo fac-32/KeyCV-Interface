@@ -1,6 +1,12 @@
 import supabase from "@/lib/supabaseClient";
 import { useState, useEffect } from "react";
 import ResultCard from "./ResultCard";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 
 type FeedbackElement = {
   job_description: string | null;
@@ -48,7 +54,18 @@ export default function Feedback() {
   return (
     <>
       {message && <p>{message}</p>}
-      {allFeedback.length > 0 && (
+      <Accordion type="single" className="w-full" collapsible>
+        {allFeedback.map((item, index) => (
+          <AccordionItem value={`feedback-${index}`}>
+            <AccordionTrigger>{item.job_name}</AccordionTrigger>
+            <AccordionContent>
+              <ResultCard jobDescription={item.job_description} feedback={item.gen_feedback}/>
+            </AccordionContent>
+          </AccordionItem>            
+        ))}
+      </Accordion>
+
+      {/* {allFeedback.length > 0 && (
         <ul>
           {allFeedback.map((item, index) => (
             <li key={index}>{item.job_name}
@@ -58,8 +75,17 @@ export default function Feedback() {
               />
             </li>
           ))}
+
+          <Accordion type="single" collapsible>
+            <AccordionItem value="item-1">
+              <AccordionTrigger>Is it accessible?</AccordionTrigger>
+              <AccordionContent>
+                Yes. It adheres to the WAI-ARIA design pattern.
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </ul>
-      )}
+      )} */}
     </>
   );
 }
